@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Bar } from "./ui";
 
 export function areasValidated(b: Business) {
-  return (b.areas ?? []).every((a) => a.step >= 4);
+  return (b.areas ?? []).every((a) => a.skipped || a.step >= 4);
 }
 
 export function ProgramHeader({ b }: { b: Business }) {
@@ -56,7 +56,17 @@ function Gate({ name, range, state, note }: { name: string; range: string; state
 function AreaColumn({ a, locked }: { a: AreaState; locked: boolean }) {
   const { lang, t } = useApp();
   const area = PROGRAM.areas.find((x) => x.id === a.area)!;
-  const step = PROGRAM.steps[Math.min(a.step, 4)]!;
+  const step = PROGRAM.steps[Math.min(a.step, 4)] ?? PROGRAM.steps[0];
+  if (a.skipped) {
+    return (
+      <div className="rounded-md border border-dashed bg-muted/40 p-3 text-muted-foreground" title={a.skipReason}>
+        <div className="font-display text-sm font-semibold line-through decoration-muted-foreground/60">{area[lang]}</div>
+        <div className="mt-0.5 text-xs">{t("No requerida según el assessment", "Not needed per the assessment")}</div>
+        <div className="mt-2 h-1.5 rounded-full bg-muted" />
+        <div className="mt-2 flex gap-1">{PROGRAM.steps.map((_, i) => <span key={i} className="h-1 flex-1 rounded-full bg-muted" />)}</div>
+      </div>
+    );
+  }
   return (
     <div className={cn("rounded-md border bg-background/60 p-3", locked && "opacity-60")}>
       <div className="font-display text-sm font-semibold">{area[lang]}</div>
@@ -85,6 +95,15 @@ export function StepDots({ step }: { step: number }) {
 export function AreaCard({ a }: { a: AreaState }) {
   const { lang, t } = useApp();
   const area = PROGRAM.areas.find((x) => x.id === a.area)!;
+  if (a.skipped) {
+    return (
+      <div className="panel border-dashed p-4 text-muted-foreground">
+        <div className="font-display font-semibold line-through decoration-muted-foreground/60">{area[lang]}</div>
+        <div className="mt-1 text-xs">{t("No requerida en este programa.", "Not needed in this program.")}</div>
+        {a.skipReason && <div className="mt-2 rounded-md bg-muted px-3 py-2 text-xs">{a.skipReason}</div>}
+      </div>
+    );
+  }
   return (
     <div className="panel p-4">
       <div className="flex items-start justify-between">
