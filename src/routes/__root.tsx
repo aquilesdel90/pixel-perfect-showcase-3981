@@ -9,7 +9,6 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -108,7 +107,6 @@ function RootComponent() {
         <AppShell>
           <Outlet />
         </AppShell>
-        <Toaster position="bottom-right" richColors closeButton />
       </AppProvider>
     </QueryClientProvider>
   );

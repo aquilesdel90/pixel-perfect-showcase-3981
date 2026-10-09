@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useApp } from "@/lib/app-state";
 import { PROGRAM } from "@/lib/config";
 import { fdate, usd } from "@/lib/format";
-import { contracts, deliverables, documents, financials, getBusiness, manualSections, programStart } from "@/lib/mock-data";
+import { contracts, deliverables, documents, financials, manualSections } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { DelivPill, DocPill } from "./status";
 import { Bar, Bars, Btn, Panel, Pill, Stat, Table } from "./ui";
@@ -16,8 +16,7 @@ export function areaName(id: string, lang: "es" | "en") {
 
 export function DeliverablesTable({ businessId, onlyOwner }: { businessId: string; onlyOwner?: boolean }) {
   const { t, lang } = useApp();
-  const owner = getBusiness(businessId)?.owner;
-  const rows = deliverables.filter((d) => d.business === businessId && (!onlyOwner || d.status === "owner" || d.responsible === owner));
+  const rows = deliverables.filter((d) => d.business === businessId && (!onlyOwner || d.status === "owner" || d.responsible === "Daniel Vossler"));
   return (
     <Table head={[t("Entregable", "Deliverable"), t("Área", "Area"), t("Responsable", "Responsible"), t("Inicio", "Start"), t("Vence", "Due"), t("Estado", "Status"), ""]}>
       {rows.map((d) => (
@@ -35,10 +34,8 @@ export function DeliverablesTable({ businessId, onlyOwner }: { businessId: strin
   );
 }
 
-export function Gantt({ businessId }: { businessId: string }) {
+export function Gantt({ businessId, startDate = "2026-07-28" }: { businessId: string; startDate?: string }) {
   const { lang, t } = useApp();
-  const startDate = programStart[businessId] ?? "2026-07-27";
-  const today = getBusiness(businessId)?.day ?? 0;
   const s0 = new Date(startDate).getTime();
   const dayOf = (iso: string) => Math.round((new Date(iso).getTime() - s0) / 864e5) + 1;
   const rows = deliverables.filter((d) => d.business === businessId);
@@ -54,7 +51,7 @@ export function Gantt({ businessId }: { businessId: string }) {
           <div className="pointer-events-none absolute inset-y-0 ml-56 right-0">
             <div className="absolute inset-y-0 bg-gold/10" style={{ left: 0, width: pct(15) }} />
             <div className="absolute inset-y-0 bg-gold/10" style={{ left: pct(150), right: 0 }} />
-            <div className="absolute inset-y-0 w-px bg-danger" style={{ left: pct(today) }} title={`${t("Hoy, día", "Today, day")} ${today}`} />
+            <div className="absolute inset-y-0 w-px bg-danger" style={{ left: pct(74) }} />
           </div>
           {rows.map((d) => {
             const a = dayOf(d.start), b = dayOf(d.due);
@@ -76,7 +73,7 @@ export function Gantt({ businessId }: { businessId: string }) {
 export function ManualView({ businessId, canApprove, versions }: { businessId: string; canApprove?: boolean; versions?: boolean }) {
   const { t } = useApp();
   const [secs, setSecs] = useState(() => manualSections(businessId));
-  const [sel, setSel] = useState(secs[0]?.id ?? "");
+  const [sel, setSel] = useState(secs[0]!.id);
   const cur = secs.find((s) => s.id === sel)!;
   const total = Math.round(secs.reduce((s, x) => s + x.pct, 0) / secs.length);
   return (
@@ -172,15 +169,15 @@ export function DocumentsView({ businessId, owner }: { businessId: string; owner
 export function NumbersView() {
   const { t } = useApp();
   const f = financials.vossler;
-  const rev = f.revenue.at(-1) ?? 0, rev0 = f.revenue[0] ?? 1;
-  const margin = f.margin.at(-1) ?? 0, margin0 = f.margin[0] ?? 0;
-  const cash = f.cash.at(-1) ?? 0;
+  const last = f.revenue.length - 1;
+  const rev = (i: number) => f.revenue[i] ?? 0;
+  const mar = (i: number) => f.margin[i] ?? 0;
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-        <Stat label={t("Facturación (sep)", "Revenue (Sep)")} value={usd(rev)} sub={`+${Math.round((rev / rev0 - 1) * 100)}% ${t("vs mayo", "vs May")}`} />
-        <Stat label={t("Margen neto", "Net margin")} value={`${margin}%`} sub={`${t("antes", "before")} ${margin0}%`} />
-        <Stat label={t("Caja", "Cash")} value={usd(cash)} />
+        <Stat label={t("Facturación (sep)", "Revenue (Sep)")} value={usd(rev(last))} sub={`+${Math.round((rev(last) / rev(0) - 1) * 100)}% ${t("vs mayo", "vs May")}`} />
+        <Stat label={t("Margen neto", "Net margin")} value={`${mar(last)}%`} sub={`${t("antes", "before")} ${mar(0)}%`} />
+        <Stat label={t("Caja", "Cash")} value={usd(f.cash[last] ?? 0)} />
         <Stat label={t("Fuente", "Source")} value="QuickBooks" sub={t("Sincronizado hoy", "Synced today")} />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">

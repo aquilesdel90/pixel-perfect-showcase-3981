@@ -21,7 +21,7 @@ export const Route = createFileRoute("/franquicias/$id")({
     ],
   }),
   component: FranchiseDetail,
-  errorComponent: ({ error }) => <div role="alert">{error instanceof Error ? error.message : String(error)}</div>,
+  errorComponent: ({ error }) => <div role="alert">{(error as Error).message}</div>,
   notFoundComponent: () => <div className="p-6">Franquicia no encontrada. <Link to="/franquicias" className="text-primary underline">Volver</Link></div>,
 });
 

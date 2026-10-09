@@ -1,11 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
 import { useApp } from "@/lib/app-state";
 import { FRANCHISABILITY_THRESHOLD, PROFIT_SPLIT } from "@/lib/config";
 import { fdate, usd } from "@/lib/format";
-import { ACTIVATE_BELOW, activity, assessmentScores, franchisabilityBreakdown, getBusiness, ownerTeam, SKIP_ABOVE, type Stage } from "@/lib/mock-data";
-import { PROGRAM } from "@/lib/config";
+import { activity, getBusiness, ownerTeam } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { AreaCard, ProgramHeader } from "@/components/sm/program";
 import { DeliverablesTable, DocumentsView, Gantt, ManualView, NumbersView } from "@/components/sm/sections";
@@ -24,7 +21,7 @@ const TABS = [
 ] as const;
 
 export const Route = createFileRoute("/negocios/$id")({
-  validateSearch: (s: Record<string, unknown>): { tab?: string | undefined } => ({ tab: typeof s["tab"] === "string" ? s["tab"] : undefined }),
+  validateSearch: (s: Record<string, unknown>): { tab?: string | undefined } => ({ tab: typeof s["tab"] === "string" ? (s["tab"] as string) : undefined }),
   loader: async ({ params }) => {
     const b = getBusiness(params.id);
     if (!b) throw notFound();
@@ -39,9 +36,17 @@ export const Route = createFileRoute("/negocios/$id")({
     ],
   }),
   component: Program,
-  errorComponent: ({ error }) => <div role="alert">{error instanceof Error ? error.message : String(error)}</div>,
+  errorComponent: ({ error }) => <div role="alert">{(error as Error).message}</div>,
   notFoundComponent: () => <div className="p-6">Negocio no encontrado. <Link to="/negocios" className="text-primary underline">Volver</Link></div>,
 });
+
+const score = [
+  { k: "Manual completo", en: "Manual completion", v: 49 },
+  { k: "Finanzas verificadas", en: "Verified finances", v: 60 },
+  { k: "Opera sin el dueño", en: "Runs without owner", v: 45 },
+  { k: "Cumplimiento", en: "Compliance", v: 75 },
+  { k: "Marca registrable", en: "Registrable brand", v: 62 },
+];
 
 function Program() {
   const { id } = Route.useLoaderData();
@@ -49,27 +54,12 @@ function Program() {
   const { t, lang } = useApp();
   const b = getBusiness(id)!;
   const inProgram = !!b.areas;
-  const score = franchisabilityBreakdown(b);
-  // Local stage so Approve / Discard give visible feedback in the prototype.
-  const [stage, setStage] = useState<Stage>(b.stage);
-  const [notes, setNotes] = useState(activity);
-  const [draft, setDraft] = useState("");
-  const decide = (s: Stage) => {
-    setStage(s);
-    toast.success(s === "approved" ? t(`${b.name} aceptado. Se arma el plan y se envía el contrato por DocuSeal.`, `${b.name} accepted. Plan is built and the contract goes out via DocuSeal.`) : t(`${b.name} descartado.`, `${b.name} discarded.`));
-  };
-  const addNote = () => {
-    if (!draft.trim()) return;
-    setNotes([{ date: "2026-10-09", who: "Marylin Boraei", text: draft.trim() }, ...notes]);
-    setDraft("");
-    toast.success(t("Nota guardada", "Note saved"));
-  };
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2"><h2 className="text-xl font-semibold">{b.name}</h2><StagePill stage={stage} /></div>
+          <div className="flex items-center gap-2"><h2 className="text-xl font-semibold">{b.name}</h2><StagePill stage={b.stage} /></div>
           <div className="text-sm text-muted-foreground">{b.industry} · {b.city} · {b.owner} · {t("Consultor", "Consultant")}: {b.consultant}</div>
         </div>
         <div className="flex gap-4 text-sm">
@@ -80,8 +70,8 @@ function Program() {
       </div>
 
       {inProgram ? <ProgramHeader b={b} /> : (
-        <Panel><p className="text-sm text-muted-foreground">{stage === "approved" ? (b.substage === "mou" ? t("Contrato enviado por DocuSeal. Cuando el dueño firme arranca el día 1 del programa.", "Contract sent via DocuSeal. Day 1 of the program starts when the owner signs.") : t("Aceptado. SM arma el plan según el diagnóstico y prepara el contrato para enviarlo por DocuSeal.", "Accepted. SM builds the plan from the diagnosis and prepares the contract to send via DocuSeal.")) : stage === "evaluated" ? t("Evaluado por el assessment. Pendiente de decisión del equipo SM.", "Evaluated. Pending SM team decision.") : t("Descartado: madurez insuficiente.", "Discarded: insufficient maturity.")}</p>
-          {stage === "evaluated" && <div className="mt-3 flex gap-2"><Btn onClick={() => decide("approved")}>{t("Aceptar y armar plan", "Accept and build plan")}</Btn><Btn variant="outline" onClick={() => decide("discarded")}>{t("Descartar", "Discard")}</Btn></div>}
+        <Panel><p className="text-sm text-muted-foreground">{b.stage === "approved" ? t("Aprobado. Esperando firma del MOU para iniciar el programa de 180 días.", "Approved. Waiting for MOU signature to start the 180-day program.") : b.stage === "evaluated" ? t("Evaluado por el assessment. Pendiente de decisión del equipo SM.", "Evaluated. Pending SM team decision.") : t("Descartado: madurez insuficiente.", "Discarded: insufficient maturity.")}</p>
+          {b.stage === "evaluated" && <div className="mt-3 flex gap-2"><Btn>{t("Aprobar", "Approve")}</Btn><Btn variant="outline">{t("Descartar", "Discard")}</Btn></div>}
         </Panel>
       )}
 
@@ -95,32 +85,12 @@ function Program() {
 
       {tab === "resumen" && (
         <div className="grid gap-4 lg:grid-cols-3">
-          <Panel title={t("Diagnóstico de entrada (assessment)", "Entry diagnosis (assessment)")} className="lg:col-span-3"
-            action={<span className="text-xs text-muted-foreground">{t(`Menos de ${ACTIVATE_BELOW}% activa trabajo · más de ${SKIP_ABOVE}% se omite · en el medio decide SM`, `Below ${ACTIVATE_BELOW}% activates work · above ${SKIP_ABOVE}% is skipped · in between SM decides`)}</span>}>
-            <div className="grid gap-x-6 gap-y-2 sm:grid-cols-2 xl:grid-cols-4">
-              {assessmentScores(id).map((s) => {
-                const tone = s.score < ACTIVATE_BELOW ? "red" : s.score > SKIP_ABOVE ? "green" : "amber";
-                const feeds = PROGRAM.areas.find((a) => a.id === s.feeds)!;
-                const st = b.areas?.find((a) => a.area === s.feeds);
-                return (
-                  <div key={s.es} className="text-xs">
-                    <div className="flex justify-between"><span>{lang === "es" ? s.es : s.en}</span><span className="num">{s.score}%</span></div>
-                    <Bar value={s.score} tone={tone} className="mt-1" />
-                    <div className="mt-0.5 text-[11px] text-muted-foreground">
-                      → {feeds[lang]}{st ? (st.skipped ? ` · ${t("omitida", "skipped")}` : ` · ${t("activa", "active")}`) : s.score < ACTIVATE_BELOW ? ` · ${t("se activaría", "would activate")}` : s.score > SKIP_ABOVE ? ` · ${t("se omitiría", "would be skipped")}` : ` · ${t("a decidir", "to decide")}`}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground">{t("Casi todos los negocios entran al programa. El puntaje no filtra: define dónde va el trabajo. Un negocio con la marca resuelta no pasa por Marca y marketing.", "Almost every business joins the program. The score does not filter: it decides where the work goes. A business with its brand sorted skips Brand & marketing.")}</p>
-          </Panel>
           <Panel title={t("Puntaje de franquiciabilidad", "Franchisability score")} className="lg:col-span-1">
             <div className="num font-display text-3xl font-semibold">{b.franchisability ?? 0}%</div>
             <Bar value={b.franchisability ?? 0} tone="gold" className="mt-2 h-2" />
             <div className="mt-1 text-xs text-muted-foreground">{t("Umbral para presentar a un Bishop", "Threshold to present to a Bishop")}: {FRANCHISABILITY_THRESHOLD}%</div>
             <ul className="mt-4 space-y-2">
-              {score.map((s) => <li key={s.es} className="text-xs"><div className="flex justify-between"><span>{lang === "es" ? s.es : s.en}</span><span className="num">{s.v}%</span></div><Bar value={s.v} className="mt-1" /></li>)}
+              {score.map((s) => <li key={s.k} className="text-xs"><div className="flex justify-between"><span>{lang === "es" ? s.k : s.en}</span><span className="num">{s.v}%</span></div><Bar value={s.v} className="mt-1" /></li>)}
             </ul>
           </Panel>
           <Panel title={t("Entregables próximos y pendientes", "Upcoming & pending deliverables")} className="lg:col-span-2"><DeliverablesTable businessId={id} /></Panel>
@@ -151,10 +121,9 @@ function Program() {
       )}
       {tab === "actividad" && (
         <Panel title={t("Actividad y notas", "Activity & notes")}>
-          <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Agregar nota interna…", "Add internal note…")} className="mb-2 h-20 w-full rounded-md border bg-background p-2 text-sm" />
-          <div className="mb-3"><Btn onClick={addNote}>{t("Guardar nota", "Save note")}</Btn></div>
+          <textarea placeholder={t("Agregar nota interna…", "Add internal note…")} className="mb-3 h-20 w-full rounded-md border bg-background p-2 text-sm" />
           <ul className="space-y-3">
-            {notes.map((a, i) => <li key={i} className="border-l-2 border-gold pl-3 text-sm"><div>{a.text}</div><div className="text-xs text-muted-foreground">{a.who} · {fdate(a.date, lang)}</div></li>)}
+            {activity.map((a, i) => <li key={i} className="border-l-2 border-gold pl-3 text-sm"><div>{a.text}</div><div className="text-xs text-muted-foreground">{a.who} · {fdate(a.date, lang)}</div></li>)}
           </ul>
         </Panel>
       )}

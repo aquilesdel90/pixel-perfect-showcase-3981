@@ -28,7 +28,7 @@ function Settings() {
   return (
     <div className="space-y-4">
       <div className="flex gap-1 overflow-x-auto border-b">
-        {tabs.map(([k = "", l]) => <button key={k} onClick={() => setTab(k)} className={cn("whitespace-nowrap border-b-2 px-3 py-2 text-sm", tab === k ? "border-gold font-semibold" : "border-transparent text-muted-foreground")}>{l}</button>)}
+        {tabs.map(([k, l]) => <button key={k} onClick={() => setTab(k ?? "programa")} className={cn("whitespace-nowrap border-b-2 px-3 py-2 text-sm", tab === k ? "border-gold font-semibold" : "border-transparent text-muted-foreground")}>{l}</button>)}
       </div>
       {tab === "programa" && (
         <div className="grid gap-4 lg:grid-cols-2">
