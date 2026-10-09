@@ -161,7 +161,7 @@ function Item({ d, verdict, note, role, children }: { d: Deliverable; verdict?: 
         <span className="num">{t("Vence", "Due")} {fdate(d.due, lang)}</span>
         {d.attachments > 0 && <span className="inline-flex items-center gap-1"><Paperclip className="h-3 w-3" />{d.attachments}</span>}
       </div>
-      {d.status === "delivered" && verdict === "pending" && <div className="mt-2"><Pill tone="amber">{role === "owner" ? t("Esperando tu aceptación", "Waiting for your acceptance") : t("Esperando aceptación del dueño", "Waiting for owner acceptance")}</Pill></div>}
+      {d.status === "delivered" && verdict === "pending" && <div className="mt-2"><Pill tone="amber">{role === "owner" ? t("Por aceptar", "To accept") : t("Esperando al dueño", "Waiting for owner")}</Pill></div>}
       {d.status === "delivered" && verdict === "accepted" && <div className="mt-2"><Pill tone="green"><CheckCircle2 className="mr-1 h-3 w-3" />{t("Aceptado por el dueño", "Accepted by the owner")}</Pill></div>}
       {d.status === "delivered" && verdict === "rework" && (
         <div className="mt-2 rounded-md border border-warning/50 bg-warning/10 p-2 text-xs">

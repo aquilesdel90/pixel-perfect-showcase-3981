@@ -85,7 +85,7 @@ function Card({ b, col }: { b: Business; col: ColumnId }) {
           <div className="truncate font-medium">{b.name}</div>
           <div className="truncate text-[11px] text-muted-foreground">{b.industry} · {b.city}</div>
         </div>
-        <Pill tone={b.maturity >= 65 ? "green" : b.maturity >= 45 ? "navy" : "amber"}>{b.level}</Pill>
+        <Pill tone={b.maturity >= 65 ? "green" : b.maturity >= 45 ? "navy" : "amber"} fit dot={false}>{b.level}</Pill>
       </div>
       {col === "program" && <div className="mt-2 flex items-center gap-2"><Bar value={prog} /><span className="num text-[11px]">{t("día", "day")} {b.day}</span></div>}
       {col === "bishop" && <div className="mt-2 flex items-center gap-2"><Bar value={b.franchisability ?? 0} tone="green" /><span className="num text-[11px]">{b.franchisability}%</span></div>}

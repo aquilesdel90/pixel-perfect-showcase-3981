@@ -47,7 +47,7 @@ function OwnerProgram() {
             {t("Tu consultor principal", "Your lead consultant")}: {b.consultant}{consultant && <> · <a className="text-primary hover:underline" href={`mailto:${consultant.email}`}>{consultant.email}</a></>}
           </div>
         </div>
-        <Pill tone="gold">{t("Día", "Day")} {b.day} {t("de 180", "of 180")}</Pill>
+        <Pill tone="gold" fit>{t("Día", "Day")} {b.day} {t("de 180", "of 180")}</Pill>
       </div>
 
       <ProgramHeader b={b} renderArea={(a, node) => a.skipped ? node : <Link to="/dueno/area/$area" params={{ area: a.area }} className="block">{node}</Link>} />

@@ -34,9 +34,9 @@ function Settings() {
         <div className="grid gap-4 lg:grid-cols-2">
           <Panel title={t("Compuertas y áreas", "Gates and areas")}>
             <Table head={[t("Nombre", "Name"), t("Tipo", "Type"), t("Días", "Days")]}>
-              <tr><td className="font-medium">{PROGRAM.gates.diagnostico[lang]}</td><td><Pill tone="gold">{t("Compuerta", "Gate")}</Pill></td><td>{PROGRAM.gates.diagnostico.start}–{PROGRAM.gates.diagnostico.end}</td></tr>
-              {PROGRAM.areas.map((a) => <tr key={a.id}><td className="font-medium">{a[lang]}</td><td><Pill tone="navy">{t("Área paralela", "Parallel area")}</Pill></td><td>{a.start}–{a.end}</td></tr>)}
-              <tr><td className="font-medium">{PROGRAM.gates.cierre[lang]}</td><td><Pill tone="gold">{t("Compuerta", "Gate")}</Pill></td><td>{PROGRAM.gates.cierre.start}–{PROGRAM.gates.cierre.end}</td></tr>
+              <tr><td className="font-medium">{PROGRAM.gates.diagnostico[lang]}</td><td><Pill tone="gold" dot={false}>{t("Compuerta", "Gate")}</Pill></td><td>{PROGRAM.gates.diagnostico.start}–{PROGRAM.gates.diagnostico.end}</td></tr>
+              {PROGRAM.areas.map((a) => <tr key={a.id}><td className="font-medium">{a[lang]}</td><td><Pill tone="navy" dot={false}>{t("Área paralela", "Parallel area")}</Pill></td><td>{a.start}–{a.end}</td></tr>)}
+              <tr><td className="font-medium">{PROGRAM.gates.cierre[lang]}</td><td><Pill tone="gold" dot={false}>{t("Compuerta", "Gate")}</Pill></td><td>{PROGRAM.gates.cierre.start}–{PROGRAM.gates.cierre.end}</td></tr>
             </Table>
             <div className="mt-3 text-xs text-muted-foreground">{t("Pasos por área", "Steps per area")}: {PROGRAM.steps.map((s) => s[lang]).join(" → ")}</div>
           </Panel>

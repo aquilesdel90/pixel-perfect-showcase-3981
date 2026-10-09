@@ -11,12 +11,13 @@ const toneCls: Record<Tone, string> = {
   grey: "bg-muted text-muted-foreground",
 };
 
-// Status pill: fully round, with a colored dot so states read at a glance instead of as boxed tags.
-export function Pill({ tone = "grey", children, dot = true }: { tone?: Tone; children: ReactNode; dot?: boolean }) {
+// Status tag: square corners and one fixed width so every state lines up in tables and cards.
+// `fit` is for inline labels (a level, a version) that should hug their text instead.
+export function Pill({ tone = "grey", children, dot = true, fit }: { tone?: Tone; children: ReactNode; dot?: boolean; fit?: boolean }) {
   return (
-    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-medium leading-5 whitespace-nowrap", toneCls[tone])} style={{ borderRadius: 999 }}>
+    <span className={cn("inline-flex items-center justify-center gap-1.5 rounded-sm px-2 py-0.5 text-[11.5px] font-medium leading-5 whitespace-nowrap", !fit && "w-[140px]", toneCls[tone])}>
       {dot && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-80" />}
-      {children}
+      <span className={cn(!fit && "truncate")}>{children}</span>
     </span>
   );
 }

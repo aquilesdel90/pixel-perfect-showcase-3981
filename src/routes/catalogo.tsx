@@ -16,7 +16,7 @@ function Catalog() {
     <div className="space-y-4">
       <Panel title={t("Catálogo de servicios", "Service catalog")} action={<Btn>{t("Nuevo servicio", "New service")}</Btn>}>
         <Table head={[t("Servicio", "Service"), t("Fase", "Phase"), t("Entregables", "Deliverables"), t("Precio individual", "Standalone price")]}>
-          {services.map((s) => <tr key={s.name}><td className="font-medium">{s.name}</td><td><Pill tone="navy">{s.phase}</Pill></td><td className="text-muted-foreground">{s.deliverables}</td><td className="text-right">{usd(s.price)}</td></tr>)}
+          {services.map((s) => <tr key={s.name}><td className="font-medium">{s.name}</td><td><Pill tone="navy" dot={false}>{s.phase}</Pill></td><td className="text-muted-foreground">{s.deliverables}</td><td className="text-right">{usd(s.price)}</td></tr>)}
         </Table>
       </Panel>
       <Panel title={t("Equipo SM", "SM team")} action={<Btn variant="outline">{t("Invitar usuario", "Invite user")}</Btn>}>

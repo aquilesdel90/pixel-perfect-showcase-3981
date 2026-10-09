@@ -96,7 +96,7 @@ export function ManualView({ businessId, canApprove, versions }: { businessId: s
       <div className="space-y-4">
         <Panel title={cur.name} action={
           <div className="flex items-center gap-2">
-            {versions && <Pill tone="navy">v1.3</Pill>}
+            {versions && <Pill tone="navy" fit dot={false}>v1.3</Pill>}
             {cur.approved ? <Pill tone="green">{t("Aprobado por el dueño", "Approved by owner")}</Pill>
               : canApprove ? <Btn variant="gold" onClick={() => setSecs(secs.map((s) => s.id === sel ? { ...s, approved: true } : s))}>{t("Aprobar sección", "Approve section")}</Btn>
               : <Pill tone="amber">{t("Pendiente de aprobación", "Awaiting approval")}</Pill>}
@@ -114,7 +114,7 @@ export function ManualView({ businessId, canApprove, versions }: { businessId: s
           </ol>
           <h4 className="mt-4 text-sm font-semibold">{t("Formularios", "Forms")}</h4>
           <div className="mt-2 flex flex-wrap gap-2">
-            {["Ficha de cliente", "Checklist de visita", "Plantilla de presupuesto"].map((f) => <Pill key={f}>{f}</Pill>)}
+            {["Ficha de cliente", "Checklist de visita", "Plantilla de presupuesto"].map((f) => <Pill key={f} fit dot={false}>{f}</Pill>)}
           </div>
         </Panel>
       </div>
