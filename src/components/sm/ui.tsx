@@ -36,8 +36,8 @@ export function Panel({ title, action, children, className }: { title?: ReactNod
   return (
     <section className={cn("panel", className)}>
       {title && (
-        <header className="flex items-center justify-between gap-2 border-b px-4 py-2.5">
-          <h3 className="text-sm font-semibold">{title}</h3>
+        <header className="flex items-center justify-between gap-2 border-b bg-muted/40 px-4 py-2.5">
+          <h3 className="font-display text-sm font-semibold">{title}</h3>
           {action}
         </header>
       )}
@@ -52,7 +52,7 @@ export function Stat({ label, value, sub, tone }: { label: string; value: ReactN
   const text = tone ? { navy: "text-primary", gold: "text-gold-foreground dark:text-gold", green: "text-success", amber: "text-foreground", red: "text-danger" }[tone] : "";
   return (
     <div className={cn("panel px-4 py-3", tone && cn("border-l-4", accent))}>
-      <div className="text-xs text-muted-foreground">{label}</div>
+      <div className="eyebrow">{label}</div>
       <div className={cn("num mt-1 font-display text-2xl font-semibold leading-tight", text)}>{value}</div>
       {sub && <div className="mt-0.5 text-xs text-muted-foreground">{sub}</div>}
     </div>
@@ -64,9 +64,9 @@ export function Table({ head, children }: { head: ReactNode[]; children: ReactNo
     <div className="overflow-x-auto">
       <table className="num w-full text-sm">
         <thead>
-          <tr className="border-b text-left text-xs text-muted-foreground">
+          <tr className="border-b-2 border-b-foreground/20 text-left">
             {head.map((h, i) => (
-              <th key={i} className="px-3 py-2 font-medium whitespace-nowrap">{h}</th>
+              <th key={i} className="eyebrow px-3 py-2 whitespace-nowrap">{h}</th>
             ))}
           </tr>
         </thead>
@@ -77,14 +77,15 @@ export function Table({ head, children }: { head: ReactNode[]; children: ReactNo
 }
 
 export function Btn({ children, variant = "primary", onClick, className }: { children: ReactNode; variant?: "primary" | "gold" | "ghost" | "outline"; onClick?: () => void; className?: string }) {
+  // Every button has a real border and a pressed state; no floating pills.
   const v = {
-    primary: "bg-primary text-primary-foreground hover:bg-primary/90",
-    gold: "bg-gold text-gold-foreground hover:bg-gold/90",
-    ghost: "hover:bg-muted",
-    outline: "border bg-card hover:bg-muted",
+    primary: "border-primary bg-primary text-primary-foreground hover:bg-primary/90",
+    gold: "border-gold-foreground/40 bg-gold text-gold-foreground hover:bg-gold/90",
+    ghost: "border-transparent hover:border-border hover:bg-muted",
+    outline: "border-input bg-card hover:bg-muted",
   }[variant];
   return (
-    <button onClick={onClick} className={cn("inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors", v, className)}>
+    <button onClick={onClick} className={cn("inline-flex h-8 items-center gap-1.5 rounded-sm border px-3 text-sm font-medium transition-colors active:translate-y-px", v, className)}>
       {children}
     </button>
   );

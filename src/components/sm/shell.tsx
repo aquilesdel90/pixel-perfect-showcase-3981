@@ -91,8 +91,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const rail = (
     <nav className="flex h-full flex-col bg-rail text-rail-foreground">
       <div className="flex h-14 items-center gap-2 border-b border-rail-active px-4">
-        <div className="flex h-7 w-7 items-center justify-center rounded bg-gold font-display text-xs font-bold text-gold-foreground">SM</div>
-        <div className="font-display text-sm font-semibold">SM Platform</div>
+        <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-gold font-display text-xs font-bold text-gold-foreground">SM</div>
+        <div className="font-display text-sm font-semibold leading-tight">Strategic Mates<div className="text-[10px] font-medium tracking-[0.12em] text-gold uppercase">Platform</div></div>
       </div>
       <div className="flex-1 space-y-0.5 p-2">
         {items.map((i) => (
@@ -119,7 +119,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-card/95 px-4 backdrop-blur">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-card px-4 shadow-[inset_0_-2px_0_var(--color-gold)]">
           <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>

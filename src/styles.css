@@ -56,8 +56,9 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.968 0.008 240);
+  /* Crisp corners and clearly visible lines: the brand is navy and gold on paper-white cards, not floating tints. */
+  --radius: 0.25rem;
+  --background: oklch(0.955 0.01 240);
   --foreground: oklch(0.24 0.03 240);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.24 0.03 240);
@@ -78,8 +79,8 @@
   --danger: oklch(0.58 0.2 27);
   --destructive: oklch(0.58 0.2 27);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.9 0.012 240);
-  --input: oklch(0.9 0.012 240);
+  --border: oklch(0.8 0.02 240);
+  --input: oklch(0.7 0.025 240);
   --ring: oklch(0.37 0.07 236);
   --rail: oklch(0.3 0.06 236);
   --rail-foreground: oklch(0.96 0.01 240);
@@ -121,8 +122,8 @@
   --warning: oklch(0.78 0.14 70);
   --danger: oklch(0.66 0.19 25);
   --destructive: oklch(0.66 0.19 25);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
+  --border: oklch(1 0 0 / 24%);
+  --input: oklch(1 0 0 / 32%);
   --ring: oklch(0.7 0.08 230);
   --rail: oklch(0.15 0.02 240);
   --rail-foreground: oklch(0.94 0.01 240);
@@ -141,6 +142,11 @@
     font-size: 14px;
   }
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
+  input, select, textarea { border-color: var(--color-input); }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 1px;
+  }
 }
 
 @utility num { font-variant-numeric: tabular-nums; }
@@ -148,5 +154,13 @@
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+}
+/* Small uppercase label used for KPI names and table headers. */
+@utility eyebrow {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
 }
 @utility gold-bar { background-color: var(--color-gold); }
