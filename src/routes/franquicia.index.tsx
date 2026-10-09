@@ -45,9 +45,9 @@ function FranchiseHome() {
       </div>
 
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-        <Stat label={t("Ventas del mes", "Sales this month")} value={usd(last.v)} sub={`${growth >= 0 ? "+" : ""}${growth}% ${t("vs. mes anterior", "vs. last month")}`} />
-        <Stat label={t("Regalía del mes", "Royalty this month")} value={usd(last.v * FEES.royalty)} sub={`${FEES.royalty * 100}% · ${t("pagada el 8 oct", "paid Oct 8")}`} />
-        <Stat label={t("Estándares", "Standards")} value={`${f.standards}%`} sub={t("auditoría 28 sep", "audit Sep 28")} />
+        <Stat label={t("Ventas del mes", "Sales this month")} value={usd(last.v)} sub={`${growth >= 0 ? "+" : ""}${growth}% ${t("vs. mes anterior", "vs. last month")}`} tone="navy" />
+        <Stat label={t("Regalía del mes", "Royalty this month")} value={usd(last.v * FEES.royalty)} sub={`${FEES.royalty * 100}% · ${t("pagada el 8 oct", "paid Oct 8")}`} tone="gold" />
+        <Stat label={t("Estándares", "Standards")} value={`${f.standards}%`} sub={t("auditoría 28 sep", "audit Sep 28")} tone={f.standards >= 85 ? "green" : "amber"} />
         <Stat label={t("Manual", "Manual")} value={f.manualVersion} sub={t("actualizado 28 sep", "updated Sep 28")} />
       </div>
 

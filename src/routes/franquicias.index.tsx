@@ -22,8 +22,8 @@ function Franchises() {
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
         <Stat label={t("Franquiciadoras", "Franchisors")} value={fr.length} />
         <Stat label={t("Franquicias", "Franchises")} value={franchises.length} />
-        <Stat label={t("Ventas del mes", "Monthly sales")} value={usd(totalSales)} />
-        <Stat label={t("Participación SM (regalías)", "SM share (royalties)")} value={usd(totalSales * FEES.royalty * FEES.smShareOfRoyalty)} sub={`${FEES.smShareOfRoyalty * 100}% ${t("de la regalía", "of royalty")}`} />
+        <Stat label={t("Ventas del mes", "Monthly sales")} value={usd(totalSales)} tone="navy" />
+        <Stat label={t("Participación SM (regalías)", "SM share (royalties)")} value={usd(totalSales * FEES.royalty * FEES.smShareOfRoyalty)} sub={`${FEES.smShareOfRoyalty * 100}% ${t("de la regalía", "of royalty")}`} tone="gold" />
       </div>
       {fr.map((b) => (
         <Panel key={b.id} title={`${b.name} · ${b.city} · Bishop ${b.bishop}`}>

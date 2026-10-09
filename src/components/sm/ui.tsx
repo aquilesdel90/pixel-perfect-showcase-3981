@@ -11,9 +11,11 @@ const toneCls: Record<Tone, string> = {
   grey: "bg-muted text-muted-foreground",
 };
 
-export function Pill({ tone = "grey", children }: { tone?: Tone; children: ReactNode }) {
+// Status pill: fully round, with a colored dot so states read at a glance instead of as boxed tags.
+export function Pill({ tone = "grey", children, dot = true }: { tone?: Tone; children: ReactNode; dot?: boolean }) {
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap", toneCls[tone])}>
+    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11.5px] font-medium leading-5 whitespace-nowrap", toneCls[tone])} style={{ borderRadius: 999 }}>
+      {dot && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-80" />}
       {children}
     </span>
   );
@@ -42,11 +44,14 @@ export function Panel({ title, action, children, className }: { title?: ReactNod
   );
 }
 
-export function Stat({ label, value, sub }: { label: string; value: ReactNode; sub?: ReactNode }) {
+// KPI tile. `tone` paints a left accent and tints the number so the key figure stands out from its neighbours.
+export function Stat({ label, value, sub, tone }: { label: string; value: ReactNode; sub?: ReactNode; tone?: "navy" | "gold" | "green" | "amber" | "red" }) {
+  const accent = tone ? { navy: "border-l-primary", gold: "border-l-gold", green: "border-l-success", amber: "border-l-warning", red: "border-l-danger" }[tone] : "";
+  const text = tone ? { navy: "text-primary", gold: "text-gold-foreground dark:text-gold", green: "text-success", amber: "text-foreground", red: "text-danger" }[tone] : "";
   return (
-    <div className="panel px-4 py-3">
+    <div className={cn("panel px-4 py-3", tone && cn("border-l-4", accent))}>
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="num mt-1 font-display text-xl font-semibold">{value}</div>
+      <div className={cn("num mt-1 font-display text-2xl font-semibold leading-tight", text)}>{value}</div>
       {sub && <div className="mt-0.5 text-xs text-muted-foreground">{sub}</div>}
     </div>
   );
@@ -86,22 +91,23 @@ export function Btn({ children, variant = "primary", onClick, className }: { chi
 export function LineChart({ series, labels, height = 160 }: { series: { values: number[]; tone: string; dashed?: boolean; name: string }[]; labels: string[]; height?: number }) {
   const w = 600;
   const max = Math.max(...series.flatMap((s) => s.values)) * 1.1 || 1;
-  const x = (i: number) => (i / (labels.length - 1)) * (w - 20) + 10;
-  const y = (v: number) => height - 20 - (v / max) * (height - 30);
+  const x = (i: number) => (i / (labels.length - 1)) * w;
+  const y = (v: number) => height - 6 - (v / max) * (height - 12);
+  // Lines live in a stretched SVG; labels are plain HTML below it so text never distorts.
   return (
     <div>
       <svg viewBox={`0 0 ${w} ${height}`} className="w-full" preserveAspectRatio="none" style={{ height }}>
         {[0.25, 0.5, 0.75, 1].map((f) => (
-          <line key={f} x1="0" x2={w} y1={y(max * f / 1.1)} y2={y(max * f / 1.1)} stroke="var(--color-border)" />
+          <line key={f} x1="0" x2={w} y1={y(max * f / 1.1)} y2={y(max * f / 1.1)} stroke="var(--color-border)" vectorEffect="non-scaling-stroke" />
         ))}
         {series.map((s) => (
-          <polyline key={s.name} fill="none" stroke={s.tone} strokeWidth="2.5" strokeDasharray={s.dashed ? "6 5" : undefined}
+          <polyline key={s.name} fill="none" stroke={s.tone} strokeWidth="2.5" strokeDasharray={s.dashed ? "6 5" : undefined} vectorEffect="non-scaling-stroke"
             points={s.values.map((v, i) => `${x(i)},${y(v)}`).join(" ")} />
         ))}
-        {labels.map((l, i) => (
-          <text key={i} x={x(i)} y={height - 4} fontSize="11" textAnchor="middle" fill="var(--color-muted-foreground)">{l}</text>
-        ))}
       </svg>
+      <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
+        {labels.map((l, i) => <span key={i} className="num">{l}</span>)}
+      </div>
       <div className="mt-2 flex gap-4 text-xs text-muted-foreground">
         {series.map((s) => (
           <span key={s.name} className="inline-flex items-center gap-1.5">

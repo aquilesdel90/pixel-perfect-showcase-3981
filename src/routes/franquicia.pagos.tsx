@@ -35,8 +35,8 @@ function FranchisePayments() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-        <Stat label={t("Ventas acumuladas 2026", "2026 sales to date")} value={usd(ytd)} />
-        <Stat label={t("Regalías pagadas", "Royalties paid")} value={usd(ytd * FEES.royalty)} sub={`${FEES.royalty * 100}%`} />
+        <Stat label={t("Ventas acumuladas 2026", "2026 sales to date")} value={usd(ytd)} tone="navy" />
+        <Stat label={t("Regalías pagadas", "Royalties paid")} value={usd(ytd * FEES.royalty)} sub={`${FEES.royalty * 100}%`} tone="gold" />
         <Stat label={t("Fondo de marketing", "Marketing fund")} value={usd(ytd * FEES.marketing)} sub={`${FEES.marketing * 100}%`} />
         <Stat label={t("Próximo reporte", "Next report")} value={reported ? t("Enviado", "Sent") : "5 nov"} sub={t("ventas de octubre", "October sales")} />
       </div>

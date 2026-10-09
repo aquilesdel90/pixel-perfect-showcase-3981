@@ -22,9 +22,9 @@ function Portfolio() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-        <Stat label={t("Invertido", "Invested")} value={usd(inv.invested)} sub={`${biz.name} · ${fdate(inv.date, lang)}`} />
-        <Stat label={t("Recuperado", "Recovered")} value={usd(inv.recovered)} sub={`${pct}% ${t("en", "in")} ${r.real.length - 1} ${t("meses", "months")}`} />
-        <Stat label={t("Participación hoy", "Current share")} value={`${inv.share}%`} sub={t("baja al estabilizarse", "drops once stabilized")} />
+        <Stat label={t("Invertido", "Invested")} value={usd(inv.invested)} sub={`${biz.name} · ${fdate(inv.date, lang)}`} tone="navy" />
+        <Stat label={t("Recuperado", "Recovered")} value={usd(inv.recovered)} sub={`${pct}% ${t("en", "in")} ${r.real.length - 1} ${t("meses", "months")}`} tone="gold" />
+        <Stat label={t("Participación hoy", "Current share")} value={`${inv.share}%`} sub={t("baja al estabilizarse", "drops once stabilized")} tone="green" />
         <Stat label={t("Recuperación estimada", "Estimated payback")} value={inv.paybackMonth} sub={t("al ritmo actual", "at the current pace")} />
       </div>
 

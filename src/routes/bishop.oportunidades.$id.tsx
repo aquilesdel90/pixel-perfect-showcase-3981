@@ -49,8 +49,8 @@ function OpportunitySheet() {
 
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
         <Stat label={t("Ventas verificadas (12 m)", "Verified revenue (12 m)")} value={usd(b.revenue)} sub="QuickBooks" />
-        <Stat label={t("Inversión del Bishop", "Bishop investment")} value={usd(d.investment)} />
-        <Stat label={t("Participación año 1", "Share year 1")} value={`${d.shareYear1}%`} sub={`${d.shareStable}% ${t("estabilizado", "stabilized")}`} />
+        <Stat label={t("Inversión del Bishop", "Bishop investment")} value={usd(d.investment)} tone="navy" />
+        <Stat label={t("Participación año 1", "Share year 1")} value={`${d.shareYear1}%`} sub={`${d.shareStable}% ${t("estabilizado", "stabilized")}`} tone="gold" />
         <Stat label={t("Estimado listo", "Estimated ready")} value={fdate(d.ready, lang)} sub={`${t("día", "day")} ${b.day}/180 ${t("hoy", "today")}`} />
       </div>
 
