@@ -31,6 +31,7 @@ import { Route as NegociosIndexRouteImport } from './routes/negocios.index'
 import { Route as NegociosIdRouteImport } from './routes/negocios.$id'
 import { Route as BishopOportunidadesIndexRouteImport } from './routes/bishop.oportunidades.index'
 import { Route as BishopOportunidadesIdRouteImport } from './routes/bishop.oportunidades.$id'
+import { Route as DuenoAreaAreaRouteImport } from './routes/dueno.area.$area'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -143,6 +144,11 @@ const BishopOportunidadesIdRoute = BishopOportunidadesIdRouteImport.update({
   path: '/bishop/oportunidades/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DuenoAreaAreaRoute = DuenoAreaAreaRouteImport.update({
+  id: '/dueno/area/$area',
+  path: '/dueno/area/$area',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/franquicias/': typeof FranquiciasIndexRoute
   '/negocios/': typeof NegociosIndexRoute
   '/bishop/oportunidades/$id': typeof BishopOportunidadesIdRoute
+  '/dueno/area/$area': typeof DuenoAreaAreaRoute
   '/bishop/oportunidades/': typeof BishopOportunidadesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/franquicias': typeof FranquiciasIndexRoute
   '/negocios': typeof NegociosIndexRoute
   '/bishop/oportunidades/$id': typeof BishopOportunidadesIdRoute
+  '/dueno/area/$area': typeof DuenoAreaAreaRoute
   '/bishop/oportunidades': typeof BishopOportunidadesIndexRoute
 }
 export interface FileRoutesById {
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/franquicias/': typeof FranquiciasIndexRoute
   '/negocios/': typeof NegociosIndexRoute
   '/bishop/oportunidades/$id': typeof BishopOportunidadesIdRoute
+  '/dueno/area/$area': typeof DuenoAreaAreaRoute
   '/bishop/oportunidades/': typeof BishopOportunidadesIndexRoute
 }
 export interface FileRouteTypes {
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/franquicias/'
     | '/negocios/'
     | '/bishop/oportunidades/$id'
+    | '/dueno/area/$area'
     | '/bishop/oportunidades/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/franquicias'
     | '/negocios'
     | '/bishop/oportunidades/$id'
+    | '/dueno/area/$area'
     | '/bishop/oportunidades'
   id:
     | '__root__'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/franquicias/'
     | '/negocios/'
     | '/bishop/oportunidades/$id'
+    | '/dueno/area/$area'
     | '/bishop/oportunidades/'
   fileRoutesById: FileRoutesById
 }
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   FranquiciasIndexRoute: typeof FranquiciasIndexRoute
   NegociosIndexRoute: typeof NegociosIndexRoute
   BishopOportunidadesIdRoute: typeof BishopOportunidadesIdRoute
+  DuenoAreaAreaRoute: typeof DuenoAreaAreaRoute
   BishopOportunidadesIndexRoute: typeof BishopOportunidadesIndexRoute
 }
 
@@ -473,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BishopOportunidadesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dueno/area/$area': {
+      id: '/dueno/area/$area'
+      path: '/dueno/area/$area'
+      fullPath: '/dueno/area/$area'
+      preLoaderRoute: typeof DuenoAreaAreaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -498,6 +518,7 @@ const rootRouteChildren: RootRouteChildren = {
   FranquiciasIndexRoute: FranquiciasIndexRoute,
   NegociosIndexRoute: NegociosIndexRoute,
   BishopOportunidadesIdRoute: BishopOportunidadesIdRoute,
+  DuenoAreaAreaRoute: DuenoAreaAreaRoute,
   BishopOportunidadesIndexRoute: BishopOportunidadesIndexRoute,
 }
 export const routeTree = rootRouteImport

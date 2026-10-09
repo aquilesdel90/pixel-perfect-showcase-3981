@@ -10,7 +10,7 @@ const router = () => createRouter({ routeTree, context: { queryClient: new Query
 
 const PAGES = [
   "/", "/negocios", "/negocios/vossler", "/franquicias", "/franquicias/bimbo-orl", "/calendario", "/catalogo", "/configuracion", "/perfil",
-  "/dueno", "/dueno/manual", "/dueno/documentos", "/dueno/numeros", "/dueno/negocio",
+  "/dueno", "/dueno/area/fin", "/dueno/manual", "/dueno/documentos", "/dueno/numeros", "/dueno/negocio",
   "/bishop", "/bishop/oportunidades", "/bishop/oportunidades/vossler", "/bishop/acuerdos",
   "/franquicia", "/franquicia/manual", "/franquicia/pagos", "/franquicia/negocio",
 ];

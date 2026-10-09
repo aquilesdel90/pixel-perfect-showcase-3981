@@ -1,4 +1,5 @@
-import { Check, Lock } from "lucide-react";
+import { Check, ChevronRight, Lock } from "lucide-react";
+import type { ReactNode } from "react";
 import { useApp } from "@/lib/app-state";
 import { PROGRAM } from "@/lib/config";
 import type { AreaState, Business } from "@/lib/mock-data";
@@ -9,7 +10,8 @@ export function areasValidated(b: Business) {
   return (b.areas ?? []).every((a) => a.skipped || a.step >= 4);
 }
 
-export function ProgramHeader({ b }: { b: Business }) {
+// renderArea lets each page wrap an area column in its own link (SM and owner go to different routes).
+export function ProgramHeader({ b, renderArea = (_a, node) => node }: { b: Business; renderArea?: (a: AreaState, node: ReactNode) => ReactNode }) {
   const { lang, t } = useApp();
   const day = b.day ?? 0;
   const diag = PROGRAM.gates.diagnostico;
@@ -27,7 +29,7 @@ export function ProgramHeader({ b }: { b: Business }) {
       <div className="grid gap-2 lg:grid-cols-[150px_1fr_150px]">
         <Gate name={diag[lang]} range={`${t("Días", "Days")} ${diag.start}–${diag.end}`} state={diagDone ? "done" : "active"} />
         <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-          {(b.areas ?? []).map((a) => <AreaColumn key={a.area} a={a} locked={!diagDone} />)}
+          {(b.areas ?? []).map((a) => <div key={a.area}>{renderArea(a, <AreaColumn a={a} locked={!diagDone} />)}</div>)}
         </div>
         <Gate name={cierre[lang]} range={`${t("Días", "Days")} ${cierre.start}–${cierre.end}`}
           state={b.stage === "franchisor" ? "done" : closeOpen ? "active" : "locked"}
@@ -68,8 +70,8 @@ function AreaColumn({ a, locked }: { a: AreaState; locked: boolean }) {
     );
   }
   return (
-    <div className={cn("rounded-md border bg-background/60 p-3", locked && "opacity-60")}>
-      <div className="font-display text-sm font-semibold">{area[lang]}</div>
+    <div className={cn("group rounded-md border bg-background/60 p-3 transition-colors hover:border-primary/50", locked && "opacity-60")}>
+      <div className="flex items-center justify-between font-display text-sm font-semibold">{area[lang]}<ChevronRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" /></div>
       <div className="mt-0.5 text-xs text-muted-foreground">
         {locked ? t("Empieza día ", "Starts day ") + area.start : a.step >= 5 ? t("Completa", "Complete") : step[lang]}
       </div>
@@ -92,7 +94,7 @@ export function StepDots({ step }: { step: number }) {
   );
 }
 
-export function AreaCard({ a }: { a: AreaState }) {
+export function AreaCard({ a, clickable }: { a: AreaState; clickable?: boolean }) {
   const { lang, t } = useApp();
   const area = PROGRAM.areas.find((x) => x.id === a.area)!;
   if (a.skipped) {
@@ -105,7 +107,7 @@ export function AreaCard({ a }: { a: AreaState }) {
     );
   }
   return (
-    <div className="panel p-4">
+    <div className={cn("panel h-full p-4", clickable && "transition-colors hover:border-primary/50")}>
       <div className="flex items-start justify-between">
         <div>
           <div className="font-display font-semibold">{area[lang]}</div>
@@ -129,6 +131,7 @@ export function AreaCard({ a }: { a: AreaState }) {
           <span className="text-muted-foreground">{t("Próximo del dueño", "Owner next")}: </span>{a.ownerNext}
         </div>
       )}
+      {clickable && <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">{t("Ver acciones", "See actions")}<ChevronRight className="h-3.5 w-3.5" /></div>}
     </div>
   );
 }

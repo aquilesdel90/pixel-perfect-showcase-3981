@@ -6,10 +6,10 @@ export const PROGRAM = {
     cierre: { es: "Cierre franquiciable", en: "Franchisable close", start: 150, end: 180 },
   },
   areas: [
-    { id: "fin", es: "Finanzas", en: "Finance", start: 15, end: 150 },
-    { id: "proc", es: "Procesos", en: "Processes", start: 15, end: 150 },
-    { id: "marca", es: "Marca y marketing", en: "Brand & marketing", start: 15, end: 150 },
-    { id: "legal", es: "Legal y equipo", en: "Legal & team", start: 15, end: 150 },
+    { id: "fin", es: "Finanzas", en: "Finance", start: 15, end: 150, validate: "Tres cierres mensuales seguidos sin ajustes manuales y flujo de caja proyectado a 90 días.", validateEn: "Three consecutive monthly closes without manual adjustments and a 90-day cash flow projection." },
+    { id: "proc", es: "Procesos", en: "Processes", start: 15, end: 150, validate: "El equipo opera dos semanas con los procedimientos nuevos sin intervención del dueño.", validateEn: "The team runs two weeks on the new procedures without the owner stepping in." },
+    { id: "marca", es: "Marca y marketing", en: "Brand & marketing", start: 15, end: 150, validate: "Marca registrable, manual de marca aprobado y plan comercial con presupuesto.", validateEn: "Registrable brand, approved brand manual and a budgeted sales plan." },
+    { id: "legal", es: "Legal y equipo", en: "Legal & team", start: 15, end: 150, validate: "Licencias y contratos vigentes, organigrama con un alterno por puesto clave.", validateEn: "Licenses and contracts in force, org chart with a backup for every key role." },
   ],
   steps: [
     { es: "Relevar", en: "Survey" },

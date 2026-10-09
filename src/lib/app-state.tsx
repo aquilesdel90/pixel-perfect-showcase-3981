@@ -3,6 +3,9 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export type Role = "sm" | "owner" | "bishop" | "franchise";
 export type Lang = "es" | "en";
 
+// Owner's verdict on a deliverable SM handed in. Kept app-wide so it survives navigation.
+export type Review = { review: "pending" | "accepted" | "rework"; note?: string };
+
 interface AppState {
   role: Role;
   setRole: (r: Role) => void;
@@ -11,6 +14,8 @@ interface AppState {
   dark: boolean;
   setDark: (d: boolean) => void;
   t: (es: string, en: string) => string;
+  reviews: Record<string, Review>;
+  setReview: (deliverableId: string, r: Review) => void;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -35,8 +40,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang;
   }, [role, lang, dark]);
 
+  const [reviews, setReviews] = useState<Record<string, Review>>({});
+  const setReview = (id: string, r: Review) => setReviews((prev) => ({ ...prev, [id]: r }));
+
   const t = (es: string, en: string) => (lang === "es" ? es : en);
-  return <Ctx.Provider value={{ role, setRole, lang, setLang, dark, setDark, t }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ role, setRole, lang, setLang, dark, setDark, t, reviews, setReview }}>{children}</Ctx.Provider>;
 }
 
 export function useApp() {

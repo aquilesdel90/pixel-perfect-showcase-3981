@@ -3,10 +3,10 @@ import { CheckCircle2, Upload, Video } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useApp } from "@/lib/app-state";
-import { CURRENT, FRANCHISABILITY_THRESHOLD } from "@/lib/config";
+import { CURRENT, FRANCHISABILITY_THRESHOLD, PROGRAM } from "@/lib/config";
 import { fdate } from "@/lib/format";
 import { pageHead } from "@/lib/head";
-import { deliverables, documents, events, getBusiness, manualSections, team, WEEK, WEEK_EN } from "@/lib/mock-data";
+import { contracts, deliverables, documents, events, getBusiness, manualSections, team, WEEK, WEEK_EN } from "@/lib/mock-data";
 import { AreaCard, ProgramHeader } from "@/components/sm/program";
 import { Bar, Btn, Panel, Pill } from "@/components/sm/ui";
 
@@ -15,18 +15,20 @@ export const Route = createFileRoute("/dueno/")({
   component: OwnerProgram,
 });
 
-type Todo = { id: string; es: string; en: string; kind: "upload" | "approve" | "task"; due?: string };
+type Todo = { id: string; es: string; en: string; kind: "upload" | "approve" | "task" | "review" | "sign"; due?: string; area?: string };
 
 function OwnerProgram() {
-  const { t, lang } = useApp();
+  const { t, lang, reviews } = useApp();
   const b = getBusiness(CURRENT.ownerBusiness)!;
   const consultant = team.find((m) => m.name === b.consultant);
   const week = lang === "es" ? WEEK : WEEK_EN;
 
   // Everything the owner has to do, gathered from deliverables, documents and manual sections.
   const initial: Todo[] = [
+    ...deliverables.filter((d) => d.business === b.id && d.status === "delivered" && (reviews[d.id]?.review ?? d.review) === "pending").map((d) => ({ id: `r-${d.id}`, es: `Aceptar o pedir cambios: ${d.name}`, en: `Accept or request changes: ${d.name}`, kind: "review" as const, area: d.area })),
+    ...contracts.filter((c) => c.business === b.id && c.state === "sent").map((c) => ({ id: c.id, es: `Firmar ${c.name} (DocuSeal)`, en: `Sign ${c.name} (DocuSeal)`, kind: "sign" as const, due: c.date, area: c.area })),
     ...documents.filter((d) => d.business === b.id && d.state === "requested").map((d) => ({ id: d.id, es: `Subir ${d.name}`, en: `Upload ${d.name}`, kind: "upload" as const, due: d.date })),
-    ...deliverables.filter((d) => d.business === b.id && d.status === "owner").map((d) => ({ id: d.id, es: d.name, en: d.name, kind: "task" as const, due: d.due })),
+    ...deliverables.filter((d) => d.business === b.id && d.status === "owner").map((d) => ({ id: d.id, es: d.name, en: d.name, kind: "task" as const, due: d.due, area: d.area })),
     ...manualSections(b.id).filter((s) => !s.approved && s.pct >= 50).map((s) => ({ id: `m-${s.id}`, es: `Revisar y aprobar "${s.name}" del manual`, en: `Review and approve "${s.name}" in the manual`, kind: "approve" as const })),
   ];
   const [todos, setTodos] = useState(initial);
@@ -48,7 +50,7 @@ function OwnerProgram() {
         <Pill tone="gold">{t("Día", "Day")} {b.day} {t("de 180", "of 180")}</Pill>
       </div>
 
-      <ProgramHeader b={b} />
+      <ProgramHeader b={b} renderArea={(a, node) => a.skipped ? node : <Link to="/dueno/area/$area" params={{ area: a.area }} className="block">{node}</Link>} />
 
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <Panel title={t("Te toca a vos", "Your turn")} action={<Pill tone={todos.length ? "amber" : "green"}>{todos.length} {t("pendientes", "pending")}</Pill>}>
@@ -64,6 +66,9 @@ function OwnerProgram() {
                   </div>
                   {x.kind === "upload" ? <Btn variant="outline" onClick={() => done(x)}><Upload className="h-3.5 w-3.5" />{t("Subir", "Upload")}</Btn>
                     : x.kind === "approve" ? <Link to="/dueno/manual"><Btn variant="gold">{t("Revisar", "Review")}</Btn></Link>
+                    : x.kind === "review" && x.area ? <Link to="/dueno/area/$area" params={{ area: x.area }}><Btn variant="gold">{t("Revisar", "Review")}</Btn></Link>
+                    : x.kind === "sign" && x.area && PROGRAM.areas.some((p) => p.id === x.area) ? <Link to="/dueno/area/$area" params={{ area: x.area }}><Btn variant="gold">{t("Firmar", "Sign")}</Btn></Link>
+                    : x.kind === "sign" ? <Btn variant="gold" onClick={() => done(x)}>{t("Firmar", "Sign")}</Btn>
                     : <Btn variant="outline" onClick={() => done(x)}>{t("Marcar hecho", "Mark done")}</Btn>}
                 </li>
               ))}
@@ -97,7 +102,9 @@ function OwnerProgram() {
           <span className="text-xs text-muted-foreground">{t("Relevar · Diseñar · Implementar · Validar · Documentar", "Survey · Design · Implement · Validate · Document")}</span>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {(b.areas ?? []).map((a) => <AreaCard key={a.area} a={a} />)}
+          {(b.areas ?? []).map((a) => a.skipped ? <AreaCard key={a.area} a={a} /> : (
+            <Link key={a.area} to="/dueno/area/$area" params={{ area: a.area }} className="block"><AreaCard a={a} clickable /></Link>
+          ))}
         </div>
       </div>
     </div>

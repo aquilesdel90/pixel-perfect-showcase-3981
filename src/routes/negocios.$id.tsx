@@ -2,11 +2,11 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useApp } from "@/lib/app-state";
-import { FRANCHISABILITY_THRESHOLD, PROFIT_SPLIT } from "@/lib/config";
+import { FRANCHISABILITY_THRESHOLD, PROFIT_SPLIT, PROGRAM, type AreaId } from "@/lib/config";
 import { fdate, usd } from "@/lib/format";
 import { ACTIVATE_BELOW, activity, assessmentScores, franchisabilityBreakdown, getBusiness, ownerTeam, SKIP_ABOVE, type Stage } from "@/lib/mock-data";
-import { PROGRAM } from "@/lib/config";
 import { cn } from "@/lib/utils";
+import { AreaDetail } from "@/components/sm/area-detail";
 import { AreaCard, ProgramHeader } from "@/components/sm/program";
 import { DeliverablesTable, DocumentsView, Gantt, ManualView, NumbersView } from "@/components/sm/sections";
 import { StagePill } from "@/components/sm/status";
@@ -24,7 +24,10 @@ const TABS = [
 ] as const;
 
 export const Route = createFileRoute("/negocios/$id")({
-  validateSearch: (s: Record<string, unknown>): { tab?: string | undefined } => ({ tab: typeof s["tab"] === "string" ? s["tab"] : undefined }),
+  validateSearch: (s: Record<string, unknown>): { tab?: string | undefined; area?: string | undefined } => ({
+    tab: typeof s["tab"] === "string" ? s["tab"] : undefined,
+    area: typeof s["area"] === "string" ? s["area"] : undefined,
+  }),
   loader: async ({ params }) => {
     const b = getBusiness(params.id);
     if (!b) throw notFound();
@@ -45,10 +48,11 @@ export const Route = createFileRoute("/negocios/$id")({
 
 function Program() {
   const { id } = Route.useLoaderData();
-  const { tab = "resumen" } = Route.useSearch();
+  const { tab = "resumen", area } = Route.useSearch();
   const { t, lang } = useApp();
   const b = getBusiness(id)!;
   const inProgram = !!b.areas;
+  const areaId = PROGRAM.areas.some((a) => a.id === area) ? (area as AreaId) : undefined;
   const score = franchisabilityBreakdown(b);
   // Local stage so Approve / Discard give visible feedback in the prototype.
   const [stage, setStage] = useState<Stage>(b.stage);
@@ -79,7 +83,7 @@ function Program() {
         </div>
       </div>
 
-      {inProgram ? <ProgramHeader b={b} /> : (
+      {inProgram ? <ProgramHeader b={b} renderArea={(a, node) => a.skipped ? node : <Link to="/negocios/$id" params={{ id }} search={{ tab: "areas", area: a.area }} className="block">{node}</Link>} /> : (
         <Panel><p className="text-sm text-muted-foreground">{stage === "approved" ? (b.substage === "mou" ? t("Contrato enviado por DocuSeal. Cuando el dueño firme arranca el día 1 del programa.", "Contract sent via DocuSeal. Day 1 of the program starts when the owner signs.") : t("Aceptado. SM arma el plan según el diagnóstico y prepara el contrato para enviarlo por DocuSeal.", "Accepted. SM builds the plan from the diagnosis and prepares the contract to send via DocuSeal.")) : stage === "evaluated" ? t("Evaluado por el assessment. Pendiente de decisión del equipo SM.", "Evaluated. Pending SM team decision.") : t("Descartado: madurez insuficiente.", "Discarded: insufficient maturity.")}</p>
           {stage === "evaluated" && <div className="mt-3 flex gap-2"><Btn onClick={() => decide("approved")}>{t("Aceptar y armar plan", "Accept and build plan")}</Btn><Btn variant="outline" onClick={() => decide("discarded")}>{t("Descartar", "Discard")}</Btn></div>}
         </Panel>
@@ -126,7 +130,20 @@ function Program() {
           <Panel title={t("Entregables próximos y pendientes", "Upcoming & pending deliverables")} className="lg:col-span-2"><DeliverablesTable businessId={id} /></Panel>
         </div>
       )}
-      {tab === "areas" && (inProgram ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{b.areas!.map((a) => <AreaCard key={a.area} a={a} />)}</div> : <Empty />)}
+      {tab === "areas" && !inProgram && <Empty />}
+      {tab === "areas" && inProgram && !areaId && (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {b.areas!.map((a) => a.skipped ? <AreaCard key={a.area} a={a} /> : (
+            <Link key={a.area} to="/negocios/$id" params={{ id }} search={{ tab: "areas", area: a.area }} className="block"><AreaCard a={a} clickable /></Link>
+          ))}
+        </div>
+      )}
+      {tab === "areas" && inProgram && areaId && (
+        <div className="space-y-3">
+          <Link to="/negocios/$id" params={{ id }} search={{ tab: "areas" }} className="text-sm text-muted-foreground hover:text-foreground">← {t("Todas las áreas", "All areas")}</Link>
+          <AreaDetail b={b} areaId={areaId} role="sm" />
+        </div>
+      )}
       {tab === "plan" && <div className="space-y-4"><Panel title="Gantt"><Gantt businessId={id} /></Panel><Panel title={t("Entregables", "Deliverables")}><DeliverablesTable businessId={id} /></Panel></div>}
       {tab === "manual" && <ManualView businessId={id} />}
       {tab === "docs" && <DocumentsView businessId={id} />}

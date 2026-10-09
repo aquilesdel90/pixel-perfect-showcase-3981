@@ -142,24 +142,33 @@ export const assessmentScores = (businessId: string) => {
   return ASSESSMENT_AREAS.map((a, i) => ({ ...a, score: s[i] ?? 0 }));
 };
 
+export type ProgramArea = AreaId | "diag" | "cierre";
 export interface Deliverable {
-  id: string; business: string; area: AreaId | "diag" | "cierre"; name: string; responsible: string;
+  id: string; business: string; area: ProgramArea; name: string; responsible: string;
   start: string; due: string; status: DelivStatus; attachments: number;
+  description?: string;
+  review?: "pending" | "accepted" | "rework"; // only for delivered items: the owner's verdict
+  reviewNote?: string;
 }
 
 export const deliverables: Deliverable[] = [
   { id: "d1", business: "vossler", area: "diag", name: "Informe de diagnóstico", responsible: "Nicolás García", start: "2026-07-28", due: "2026-08-11", status: "delivered", attachments: 2 },
   { id: "d2", business: "vossler", area: "diag", name: "Cuenta de Google Workspace", responsible: "Aquiles Benítez", start: "2026-07-28", due: "2026-08-04", status: "delivered", attachments: 0 },
-  { id: "d3", business: "vossler", area: "fin", name: "Separación de cuentas y QuickBooks", responsible: "Marylin Boraei", start: "2026-08-12", due: "2026-09-15", status: "delivered", attachments: 3 },
-  { id: "d4", business: "vossler", area: "fin", name: "Estados financieros verificados", responsible: "Marylin Boraei", start: "2026-09-01", due: "2026-10-20", status: "progress", attachments: 1 },
-  { id: "d5", business: "vossler", area: "fin", name: "Estados de cuenta agosto", responsible: "Daniel Vossler", start: "2026-09-20", due: "2026-10-05", status: "owner", attachments: 0 },
-  { id: "d6", business: "vossler", area: "proc", name: "Mapa de procesos: ventas", responsible: "Nicolás García", start: "2026-08-12", due: "2026-09-10", status: "delivered", attachments: 1 },
-  { id: "d7", business: "vossler", area: "proc", name: "Mapa de procesos: obra", responsible: "Nicolás García", start: "2026-09-05", due: "2026-10-02", status: "overdue", attachments: 1 },
+  { id: "d3", business: "vossler", area: "fin", name: "Separación de cuentas y QuickBooks", responsible: "Marylin Boraei", start: "2026-08-12", due: "2026-09-15", status: "delivered", attachments: 3, review: "accepted", description: "Cuenta bancaria del negocio separada de la personal, QuickBooks conectado y plan de cuentas cargado." },
+  { id: "d22", business: "vossler", area: "fin", name: "Plantilla de flujo de caja mensual", responsible: "Marylin Boraei", start: "2026-09-01", due: "2026-09-25", status: "delivered", attachments: 1, review: "rework", reviewNote: "Faltan los pagos a subcontratistas, no cierra con el banco. Agregar la fila y volver a mandar.", description: "Planilla que el dueño actualiza cada semana con cobros, pagos y saldo proyectado." },
+  { id: "d4", business: "vossler", area: "fin", name: "Estados financieros verificados", responsible: "Marylin Boraei", start: "2026-09-01", due: "2026-10-20", status: "progress", attachments: 1, description: "P&L, balance y flujo de los últimos 12 meses cruzados con el banco." },
+  { id: "d5", business: "vossler", area: "fin", name: "Estados de cuenta agosto", responsible: "Daniel Vossler", start: "2026-09-20", due: "2026-10-05", status: "owner", attachments: 0, description: "Extractos bancarios de agosto de las dos cuentas." },
+  { id: "d23", business: "vossler", area: "fin", name: "Presupuesto 2027", responsible: "Marylin Boraei", start: "2026-11-10", due: "2026-12-05", status: "planned", attachments: 0 },
+  { id: "d6", business: "vossler", area: "proc", name: "Mapa de procesos: ventas", responsible: "Nicolás García", start: "2026-08-12", due: "2026-09-10", status: "delivered", attachments: 1, review: "accepted", description: "Desde el primer contacto hasta la firma del presupuesto, con responsables y formatos." },
+  { id: "d7", business: "vossler", area: "proc", name: "Mapa de procesos: obra", responsible: "Nicolás García", start: "2026-09-05", due: "2026-10-02", status: "overdue", attachments: 1, description: "Desde la firma hasta la entrega de la obra: compras, cuadrillas, control de calidad." },
+  { id: "d24", business: "vossler", area: "proc", name: "Checklist de calidad por obra", responsible: "Daniel Vossler", start: "2026-10-06", due: "2026-10-12", status: "owner", attachments: 0, description: "El dueño marca qué controles hace hoy en cada obra para que SM los formalice." },
   { id: "d8", business: "vossler", area: "proc", name: "Procedimiento de compras", responsible: "Nicolás García", start: "2026-10-01", due: "2026-11-05", status: "planned", attachments: 0 },
-  { id: "d9", business: "vossler", area: "marca", name: "Auditoría de marca", responsible: "Marylin Boraei", start: "2026-08-15", due: "2026-09-20", status: "delivered", attachments: 2 },
+  { id: "d9", business: "vossler", area: "marca", name: "Auditoría de marca", responsible: "Marylin Boraei", start: "2026-08-15", due: "2026-09-20", status: "delivered", attachments: 2, review: "pending", description: "Qué transmite la marca hoy, si es registrable y qué habría que cambiar." },
   { id: "d10", business: "vossler", area: "marca", name: "Propuesta de identidad visual", responsible: "Marylin Boraei", start: "2026-09-21", due: "2026-10-15", status: "progress", attachments: 3 },
-  { id: "d11", business: "vossler", area: "legal", name: "Estructura LLC y operating agreement", responsible: "Aquiles Benítez", start: "2026-08-12", due: "2026-09-12", status: "delivered", attachments: 2 },
+  { id: "d26", business: "vossler", area: "marca", name: "Decisión sobre el nombre de la marca", responsible: "Daniel Vossler", start: "2026-10-09", due: "2026-10-22", status: "owner", attachments: 0, description: "El nombre actual no es registrable tal como está. El dueño decide si lo cambia o lo adapta." },
+  { id: "d11", business: "vossler", area: "legal", name: "Estructura LLC y operating agreement", responsible: "Aquiles Benítez", start: "2026-08-12", due: "2026-09-12", status: "delivered", attachments: 2, review: "accepted" },
   { id: "d12", business: "vossler", area: "legal", name: "Registro de marca (USPTO)", responsible: "Aquiles Benítez", start: "2026-09-15", due: "2026-11-30", status: "progress", attachments: 1 },
+  { id: "d25", business: "vossler", area: "legal", name: "Organigrama con alternos", responsible: "Marylin Boraei", start: "2026-10-20", due: "2026-11-20", status: "planned", attachments: 0 },
   { id: "d13", business: "vossler", area: "cierre", name: "Manual de operaciones v1", responsible: "Nicolás García", start: "2027-01-08", due: "2027-02-05", status: "planned", attachments: 0 },
   { id: "d14", business: "prime10", area: "fin", name: "Separación de cuentas y QuickBooks", responsible: "Marylin Boraei", start: "2026-09-23", due: "2026-10-25", status: "progress", attachments: 0 },
   { id: "d15", business: "prime10", area: "legal", name: "Licencia de contratista", responsible: "Carla Méndez", start: "2026-09-23", due: "2026-10-06", status: "overdue", attachments: 0 },
@@ -188,22 +197,23 @@ export const manualSections = (businessId: string) => {
   return base;
 };
 
-export const documents = [
-  { id: "doc1", business: "vossler", name: "Estados financieros 2025", state: "reviewed", date: "2026-08-02" },
-  { id: "doc2", business: "vossler", name: "Licencia de contratista FL", state: "reviewed", date: "2026-08-03" },
-  { id: "doc3", business: "vossler", name: "Contratos con proveedores", state: "received", date: "2026-09-18" },
-  { id: "doc4", business: "vossler", name: "Estados de cuenta agosto", state: "requested", date: "2026-09-20" },
-  { id: "doc5", business: "vossler", name: "Póliza de seguro general", state: "requested", date: "2026-10-01" },
-  { id: "doc6", business: "prime10", name: "Licencia de contratista", state: "requested", date: "2026-09-23" },
+export const documents: { id: string; business: string; area: ProgramArea; name: string; state: string; date: string }[] = [
+  { id: "doc1", business: "vossler", area: "fin", name: "Estados financieros 2025", state: "reviewed", date: "2026-08-02" },
+  { id: "doc2", business: "vossler", area: "legal", name: "Licencia de contratista FL", state: "reviewed", date: "2026-08-03" },
+  { id: "doc3", business: "vossler", area: "proc", name: "Contratos con proveedores", state: "received", date: "2026-09-18" },
+  { id: "doc4", business: "vossler", area: "fin", name: "Estados de cuenta agosto", state: "requested", date: "2026-09-20" },
+  { id: "doc5", business: "vossler", area: "legal", name: "Póliza de seguro general", state: "requested", date: "2026-10-01" },
+  { id: "doc6", business: "prime10", area: "legal", name: "Licencia de contratista", state: "requested", date: "2026-09-23" },
 ];
 
-export const contracts = [
-  { id: "c1", business: "vossler", name: "NDA", state: "signed", date: "2026-07-20" },
-  { id: "c2", business: "vossler", name: "MOU programa 180 días", state: "signed", date: "2026-07-27" },
-  { id: "c3", business: "vossler", name: "Acuerdo con Bishop", state: "draft", date: "—" },
-  { id: "c4", business: "bimbo", name: "Acuerdo con Bishop — Jefferson Paula", state: "signed", date: "2025-11-14" },
-  { id: "c5", business: "bimbo", name: "MOU programa 180 días", state: "signed", date: "2025-03-02" },
-  { id: "c6", business: "prime10", name: "MOU programa 180 días", state: "sent", date: "2026-09-08" },
+export const contracts: { id: string; business: string; area: ProgramArea; name: string; state: string; date: string; signers?: string }[] = [
+  { id: "c1", business: "vossler", area: "diag", name: "NDA", state: "signed", date: "2026-07-20", signers: "Dueño, SM" },
+  { id: "c2", business: "vossler", area: "diag", name: "MOU programa 180 días", state: "signed", date: "2026-07-27", signers: "Dueño, SM" },
+  { id: "c7", business: "vossler", area: "legal", name: "NDA del equipo clave", state: "sent", date: "2026-09-29", signers: "Ana Vossler, Luis Prado, SM" },
+  { id: "c3", business: "vossler", area: "cierre", name: "Acuerdo con Bishop", state: "draft", date: "—", signers: "Dueño, Bishop, SM" },
+  { id: "c4", business: "bimbo", area: "cierre", name: "Acuerdo con Bishop — Jefferson Paula", state: "signed", date: "2025-11-14" },
+  { id: "c5", business: "bimbo", area: "diag", name: "MOU programa 180 días", state: "signed", date: "2025-03-02" },
+  { id: "c6", business: "prime10", area: "diag", name: "MOU programa 180 días", state: "sent", date: "2026-09-08" },
 ];
 
 export const financials = {
