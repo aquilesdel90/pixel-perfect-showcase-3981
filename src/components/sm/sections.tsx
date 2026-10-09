@@ -169,9 +169,9 @@ export function DocumentsView({ businessId, owner }: { businessId: string; owner
   );
 }
 
-export function NumbersView() {
+export function NumbersView({ businessId = "vossler" }: { businessId?: string }) {
   const { t } = useApp();
-  const f = financials.vossler;
+  const f = financials[businessId] ?? financials["vossler"]!;
   const rev = f.revenue.at(-1) ?? 0, rev0 = f.revenue[0] ?? 1;
   const margin = f.margin.at(-1) ?? 0, margin0 = f.margin[0] ?? 0;
   const cash = f.cash.at(-1) ?? 0;

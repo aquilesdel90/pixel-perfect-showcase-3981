@@ -15,12 +15,12 @@ export const Route = createFileRoute("/calendario")({
 const HOURS = Array.from({ length: 10 }, (_, i) => 8 + i);
 
 function Calendar() {
-  const { t, lang, role } = useApp();
+  const { t, lang, role, ownerBusiness } = useApp();
   const ownerView = role === "owner";
-  const [biz, setBiz] = useState(ownerView ? "vossler" : "");
+  const [biz, setBiz] = useState(ownerView ? ownerBusiness : "");
   const [mem, setMem] = useState("");
   const week = lang === "es" ? WEEK : WEEK_EN;
-  const list = events.filter((e) => (ownerView ? e.business === "vossler" : (!biz || e.business === biz) && (!mem || e.member === mem || e.kind === "client")));
+  const list = events.filter((e) => (ownerView ? e.business === ownerBusiness : (!biz || e.business === biz) && (!mem || e.member === mem || e.kind === "client")));
   const H = 48;
 
   return (

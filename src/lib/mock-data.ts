@@ -216,7 +216,20 @@ export const contracts: { id: string; business: string; area: ProgramArea; name:
   { id: "c6", business: "prime10", area: "diag", name: "MOU programa 180 días", state: "sent", date: "2026-09-08" },
 ];
 
-export const financials = {
+export const financials: Record<string, { months: string[]; revenue: number[]; margin: number[]; cash: number[]; changes: { metric: string; before: string; now: string }[] }> = {
+  bimbo: {
+    months: ["May", "Jun", "Jul", "Ago", "Sep"],
+    revenue: [98000, 104000, 109000, 112000, 118000],
+    margin: [18, 19, 19, 21, 22],
+    cash: [84000, 91000, 97000, 103000, 112000],
+    changes: [
+      { metric: "Margen neto", before: "9%", now: "22%" },
+      { metric: "Locales propios", before: "1", now: "2" },
+      { metric: "Franquicias", before: "0", now: "1 + 1 en apertura" },
+      { metric: "Regalías cobradas (sep)", before: "—", now: "$3,760" },
+      { metric: "Horas semanales del dueño en el local", before: "60", now: "12" },
+    ],
+  },
   vossler: {
     months: ["May", "Jun", "Jul", "Ago", "Sep"],
     revenue: [142000, 151000, 148000, 163000, 171000],
@@ -313,11 +326,29 @@ export const activity = [
   { date: "2026-09-29", who: "Aquiles Benítez", text: "Envió NDA del equipo por DocuSeal" },
 ];
 
-export const ownerTeam = [
-  { name: "Daniel Vossler", role: "Dueño", email: "daniel@vosslerbuild.com", state: "Activo" },
-  { name: "Ana Vossler", role: "Administración", email: "ana@vosslerbuild.com", state: "Activo" },
-  { name: "Luis Prado", role: "Jefe de obra", email: "luis@vosslerbuild.com", state: "Invitado" },
-];
+export const ownerTeams: Record<string, { name: string; role: string; email: string; state: string }[]> = {
+  vossler: [
+    { name: "Daniel Vossler", role: "Dueño", email: "daniel@vosslerbuild.com", state: "Activo" },
+    { name: "Ana Vossler", role: "Administración", email: "ana@vosslerbuild.com", state: "Activo" },
+    { name: "Luis Prado", role: "Jefe de obra", email: "luis@vosslerbuild.com", state: "Invitado" },
+  ],
+  bimbo: [
+    { name: "Rodrigo Bimbo", role: "Dueño", email: "rodrigo@bimbotacos.com", state: "Activo" },
+    { name: "Carla Bimbo", role: "Operaciones y franquicias", email: "carla@bimbotacos.com", state: "Activo" },
+    { name: "Esteban Ruiz", role: "Encargado local Orlando", email: "esteban@bimbotacos.com", state: "Activo" },
+  ],
+};
+export const ownerTeam = ownerTeams["vossler"]!;
+
+// Versions of the franchisor's manual (its "encyclopedia"). Every franchise receives a copy.
+export const manualHistory: Record<string, { v: string; date: string; note: string }[]> = {
+  bimbo: [
+    { v: "v1.3", date: "2026-09-28", note: "Compras: nuevo proveedor de tortillas y control de stock semanal" },
+    { v: "v1.2", date: "2026-07-10", note: "Atención al cliente: protocolo de reclamos" },
+    { v: "v1.1", date: "2026-05-20", note: "Cocina: tiempos de servicio y registro de temperaturas" },
+    { v: "v1.0", date: "2026-04-01", note: "Primera versión entregada a Orlando Sur" },
+  ],
+};
 
 // Franchisability score components, derived from area progress and manual completion
 // so every business gets its own numbers (the criteria themselves are still a draft).

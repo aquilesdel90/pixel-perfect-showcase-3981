@@ -18,6 +18,7 @@ import { Route as BishopIndexRouteImport } from './routes/bishop.index'
 import { Route as BishopAcuerdosRouteImport } from './routes/bishop.acuerdos'
 import { Route as DuenoIndexRouteImport } from './routes/dueno.index'
 import { Route as DuenoDocumentosRouteImport } from './routes/dueno.documentos'
+import { Route as DuenoFranquiciasRouteImport } from './routes/dueno.franquicias'
 import { Route as DuenoManualRouteImport } from './routes/dueno.manual'
 import { Route as DuenoNegocioRouteImport } from './routes/dueno.negocio'
 import { Route as DuenoNumerosRouteImport } from './routes/dueno.numeros'
@@ -76,6 +77,11 @@ const DuenoIndexRoute = DuenoIndexRouteImport.update({
 const DuenoDocumentosRoute = DuenoDocumentosRouteImport.update({
   id: '/dueno/documentos',
   path: '/dueno/documentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DuenoFranquiciasRoute = DuenoFranquiciasRouteImport.update({
+  id: '/dueno/franquicias',
+  path: '/dueno/franquicias',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DuenoManualRoute = DuenoManualRouteImport.update({
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/perfil': typeof PerfilRoute
   '/bishop/acuerdos': typeof BishopAcuerdosRoute
   '/dueno/documentos': typeof DuenoDocumentosRoute
+  '/dueno/franquicias': typeof DuenoFranquiciasRoute
   '/dueno/manual': typeof DuenoManualRoute
   '/dueno/negocio': typeof DuenoNegocioRoute
   '/dueno/numeros': typeof DuenoNumerosRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/perfil': typeof PerfilRoute
   '/bishop/acuerdos': typeof BishopAcuerdosRoute
   '/dueno/documentos': typeof DuenoDocumentosRoute
+  '/dueno/franquicias': typeof DuenoFranquiciasRoute
   '/dueno/manual': typeof DuenoManualRoute
   '/dueno/negocio': typeof DuenoNegocioRoute
   '/dueno/numeros': typeof DuenoNumerosRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/perfil': typeof PerfilRoute
   '/bishop/acuerdos': typeof BishopAcuerdosRoute
   '/dueno/documentos': typeof DuenoDocumentosRoute
+  '/dueno/franquicias': typeof DuenoFranquiciasRoute
   '/dueno/manual': typeof DuenoManualRoute
   '/dueno/negocio': typeof DuenoNegocioRoute
   '/dueno/numeros': typeof DuenoNumerosRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/bishop/acuerdos'
     | '/dueno/documentos'
+    | '/dueno/franquicias'
     | '/dueno/manual'
     | '/dueno/negocio'
     | '/dueno/numeros'
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/bishop/acuerdos'
     | '/dueno/documentos'
+    | '/dueno/franquicias'
     | '/dueno/manual'
     | '/dueno/negocio'
     | '/dueno/numeros'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/perfil'
     | '/bishop/acuerdos'
     | '/dueno/documentos'
+    | '/dueno/franquicias'
     | '/dueno/manual'
     | '/dueno/negocio'
     | '/dueno/numeros'
@@ -312,6 +324,7 @@ export interface RootRouteChildren {
   PerfilRoute: typeof PerfilRoute
   BishopAcuerdosRoute: typeof BishopAcuerdosRoute
   DuenoDocumentosRoute: typeof DuenoDocumentosRoute
+  DuenoFranquiciasRoute: typeof DuenoFranquiciasRoute
   DuenoManualRoute: typeof DuenoManualRoute
   DuenoNegocioRoute: typeof DuenoNegocioRoute
   DuenoNumerosRoute: typeof DuenoNumerosRoute
@@ -393,6 +406,13 @@ declare module '@tanstack/react-router' {
       path: '/dueno/documentos'
       fullPath: '/dueno/documentos'
       preLoaderRoute: typeof DuenoDocumentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dueno/franquicias': {
+      id: '/dueno/franquicias'
+      path: '/dueno/franquicias'
+      fullPath: '/dueno/franquicias'
+      preLoaderRoute: typeof DuenoFranquiciasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dueno/manual': {
@@ -504,6 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerfilRoute: PerfilRoute,
   BishopAcuerdosRoute: BishopAcuerdosRoute,
   DuenoDocumentosRoute: DuenoDocumentosRoute,
+  DuenoFranquiciasRoute: DuenoFranquiciasRoute,
   DuenoManualRoute: DuenoManualRoute,
   DuenoNegocioRoute: DuenoNegocioRoute,
   DuenoNumerosRoute: DuenoNumerosRoute,

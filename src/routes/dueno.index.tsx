@@ -3,10 +3,11 @@ import { CheckCircle2, Upload, Video } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useApp } from "@/lib/app-state";
-import { CURRENT, FRANCHISABILITY_THRESHOLD, PROGRAM } from "@/lib/config";
+import { FRANCHISABILITY_THRESHOLD, PROGRAM } from "@/lib/config";
 import { fdate } from "@/lib/format";
 import { pageHead } from "@/lib/head";
-import { contracts, deliverables, documents, events, getBusiness, manualSections, team, WEEK, WEEK_EN } from "@/lib/mock-data";
+import { contracts, deliverables, documents, events, getBusiness, manualSections, team, WEEK, WEEK_EN, type Business } from "@/lib/mock-data";
+import { FranchisorHome } from "@/components/sm/franchisor-home";
 import { AreaCard, ProgramHeader } from "@/components/sm/program";
 import { Bar, Btn, Panel, Pill } from "@/components/sm/ui";
 
@@ -18,8 +19,14 @@ export const Route = createFileRoute("/dueno/")({
 type Todo = { id: string; es: string; en: string; kind: "upload" | "approve" | "task" | "review" | "sign"; due?: string; area?: string };
 
 function OwnerProgram() {
+  const { ownerBusiness } = useApp();
+  const b = getBusiness(ownerBusiness)!;
+  // A small business that already franchised gets the franchisor home instead of the program view.
+  return b.stage === "franchisor" ? <FranchisorHome b={b} /> : <ProgramView b={b} />;
+}
+
+function ProgramView({ b }: { b: Business }) {
   const { t, lang, reviews } = useApp();
-  const b = getBusiness(CURRENT.ownerBusiness)!;
   const consultant = team.find((m) => m.name === b.consultant);
   const week = lang === "es" ? WEEK : WEEK_EN;
 
@@ -47,7 +54,7 @@ function OwnerProgram() {
             {t("Tu consultor principal", "Your lead consultant")}: {b.consultant}{consultant && <> · <a className="text-primary hover:underline" href={`mailto:${consultant.email}`}>{consultant.email}</a></>}
           </div>
         </div>
-        <Pill tone="gold" fit>{t("Día", "Day")} {b.day} {t("de 180", "of 180")}</Pill>
+        <Pill tone="gold" fit>{t("Small Business en programa · día", "Small Business in program · day")} {b.day} {t("de 180", "of 180")}</Pill>
       </div>
 
       <ProgramHeader b={b} renderArea={(a, node) => a.skipped ? node : <Link to="/dueno/area/$area" params={{ area: a.area }} className="block">{node}</Link>} />

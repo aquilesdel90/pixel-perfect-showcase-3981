@@ -2,9 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useApp } from "@/lib/app-state";
-import { CURRENT } from "@/lib/config";
 import { pageHead } from "@/lib/head";
-import { getBusiness, ownerTeam } from "@/lib/mock-data";
+import { getBusiness, ownerTeam, ownerTeams } from "@/lib/mock-data";
 import { Btn, Panel, Pill, Table } from "@/components/sm/ui";
 
 export const Route = createFileRoute("/dueno/negocio")({
@@ -13,9 +12,9 @@ export const Route = createFileRoute("/dueno/negocio")({
 });
 
 function OwnerBusiness() {
-  const { t } = useApp();
-  const b = getBusiness(CURRENT.ownerBusiness)!;
-  const [members, setMembers] = useState(ownerTeam);
+  const { t, ownerBusiness } = useApp();
+  const b = getBusiness(ownerBusiness)!;
+  const [members, setMembers] = useState(ownerTeams[b.id] ?? ownerTeam);
   const [invite, setInvite] = useState("");
   const sendInvite = () => {
     if (!invite.includes("@")) {

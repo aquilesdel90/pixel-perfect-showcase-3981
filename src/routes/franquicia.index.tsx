@@ -17,7 +17,7 @@ export const Route = createFileRoute("/franquicia/")({
 });
 
 function FranchiseHome() {
-  const { t, lang } = useApp();
+  const { t, lang, manualVersions } = useApp();
   const f = franchises.find((x) => x.id === CURRENT.franchise)!;
   const franchisor = getBusiness(f.franchisor)!;
   const consultant = team.find((m) => m.name === franchisor.consultant);
@@ -48,7 +48,9 @@ function FranchiseHome() {
         <Stat label={t("Ventas del mes", "Sales this month")} value={usd(last.v)} sub={`${growth >= 0 ? "+" : ""}${growth}% ${t("vs. mes anterior", "vs. last month")}`} tone="navy" />
         <Stat label={t("Regalía del mes", "Royalty this month")} value={usd(last.v * FEES.royalty)} sub={`${FEES.royalty * 100}% · ${t("pagada el 8 oct", "paid Oct 8")}`} tone="gold" />
         <Stat label={t("Estándares", "Standards")} value={`${f.standards}%`} sub={t("auditoría 28 sep", "audit Sep 28")} tone={f.standards >= 85 ? "green" : "amber"} />
-        <Stat label={t("Manual", "Manual")} value={f.manualVersion} sub={t("actualizado 28 sep", "updated Sep 28")} />
+        {manualVersions[f.franchisor] && manualVersions[f.franchisor] !== f.manualVersion
+          ? <Stat label={t("Manual", "Manual")} value={manualVersions[f.franchisor]} sub={t(`nueva versión de ${franchisor.name}, leer cambios`, `new version from ${franchisor.name}, read changes`)} tone="amber" />
+          : <Stat label={t("Manual", "Manual")} value={f.manualVersion} sub={t(`copia del manual de ${franchisor.name}`, `copy of ${franchisor.name}'s manual`)} />}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">

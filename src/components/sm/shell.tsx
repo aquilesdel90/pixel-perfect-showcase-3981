@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { ROLE_HOME, useApp, type Role } from "@/lib/app-state";
+import { getBusiness } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 type NavItem = { to: string; es: string; en: string; icon: typeof Home; exact?: boolean };
@@ -46,24 +47,46 @@ const EXTRA_TITLES: { prefix: string; es: string; en: string }[] = [
   { prefix: "/bishop/oportunidades/", es: "Ficha de oportunidad", en: "Opportunity sheet" },
 ];
 
-const ROLES: { id: Role; es: string; en: string; who: string }[] = [
-  { id: "sm", es: "Equipo SM", en: "SM team", who: "Marylin Boraei" },
-  { id: "owner", es: "Dueño de negocio", en: "Business owner", who: "Daniel Vossler · Vossler" },
-  { id: "bishop", es: "Business Bishop", en: "Business Bishop", who: "Jefferson Paula" },
-  { id: "franchise", es: "Franquiciado", en: "Franchise owner", who: "Luisa Paredes · Bimbo Orlando Sur" },
+// The owner role has two sample users: a small business in the program and one that already franchised.
+const ROLES: { key: string; id: Role; biz?: string; es: string; en: string; who: string }[] = [
+  { key: "sm", id: "sm", es: "Equipo SM", en: "SM team", who: "Marylin Boraei" },
+  { key: "owner:vossler", id: "owner", biz: "vossler", es: "Small Business · Vossler (en programa)", en: "Small Business · Vossler (in program)", who: "Daniel Vossler · Vossler" },
+  { key: "owner:bimbo", id: "owner", biz: "bimbo", es: "Small Business · Bimbo Tacos (franquiciadora)", en: "Small Business · Bimbo Tacos (franchisor)", who: "Rodrigo Bimbo · Bimbo Tacos" },
+  { key: "bishop", id: "bishop", es: "Business Bishop", en: "Business Bishop", who: "Jefferson Paula" },
+  { key: "franchise", id: "franchise", es: "Franquiciado", en: "Franchise owner", who: "Luisa Paredes · Bimbo Orlando Sur" },
+];
+
+// A franchisor's menu replaces "Mi programa" with the franchisor home and adds its franchises.
+const FRANCHISOR_NAV: NavItem[] = [
+  { to: "/dueno", es: "Mi franquiciadora", en: "My franchisor", icon: Home, exact: true },
+  { to: "/dueno/franquicias", es: "Mis franquicias", en: "My franchises", icon: Store },
+  { to: "/calendario", es: "Calendario", en: "Calendar", icon: CalendarDays },
+  { to: "/dueno/manual", es: "Mi manual", en: "My manual", icon: BookOpen },
+  { to: "/dueno/documentos", es: "Documentos", en: "Documents", icon: FileText },
+  { to: "/dueno/numeros", es: "Mis números", en: "My numbers", icon: BarChart3 },
+  { to: "/dueno/negocio", es: "Mi negocio", en: "My business", icon: Users },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { role, setRole, lang, setLang, dark, setDark, t } = useApp();
+  const { role, setRole, lang, setLang, dark, setDark, t, ownerBusiness, setOwnerBusiness } = useApp();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
-  const items = NAV[role];
+  const ownerIsFranchisor = role === "owner" && getBusiness(ownerBusiness)?.stage === "franchisor";
+  const items = ownerIsFranchisor ? FRANCHISOR_NAV : NAV[role];
 
   const extra = EXTRA_TITLES.find((e) => path.startsWith(e.prefix));
   const match = [...items].sort((a, b) => b.to.length - a.to.length).find((i) => (i.exact ? path === i.to : path.startsWith(i.to)));
   const title = extra ? extra[lang] : match ? match[lang] : "SM Platform";
-  const current = ROLES.find((r) => r.id === role)!;
+  const currentKey = role === "owner" ? `owner:${ownerBusiness}` : role;
+  const current = ROLES.find((r) => r.key === currentKey) ?? ROLES[0]!;
+  const pick = (key: string) => {
+    const r = ROLES.find((x) => x.key === key);
+    if (!r) return;
+    setRole(r.id);
+    if (r.biz) setOwnerBusiness(r.biz);
+    navigate({ to: ROLE_HOME[r.id] });
+  };
 
   const rail = (
     <nav className="flex h-full flex-col bg-rail text-rail-foreground">
@@ -81,7 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <div className="border-t border-rail-active p-3 text-xs text-rail-muted">
         <div className="text-rail-foreground">{current.who}</div>
-        <div>{current[lang]}</div>
+        <div>{role === "owner" ? (ownerIsFranchisor ? t("Small Business · Franquiciadora", "Small Business · Franchisor") : t("Small Business · En programa", "Small Business · In program")) : current[lang]}</div>
       </div>
     </nav>
   );
@@ -102,10 +125,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
           <h1 className="truncate font-display text-base font-semibold">{title}</h1>
           <div className="ml-auto flex items-center gap-2">
-            <select aria-label={t("Rol", "Role")} value={role}
-              onChange={(e) => { const r = e.target.value as Role; setRole(r); navigate({ to: ROLE_HOME[r] }); }}
-              className="h-8 rounded-md border bg-card px-2 text-sm">
-              {ROLES.map((r) => <option key={r.id} value={r.id}>{r[lang]}</option>)}
+            <select aria-label={t("Rol", "Role")} value={currentKey} onChange={(e) => pick(e.target.value)}
+              className="h-8 max-w-[260px] rounded-md border bg-card px-2 text-sm">
+              {ROLES.map((r) => <option key={r.key} value={r.key}>{r[lang]}</option>)}
             </select>
             <div className="flex overflow-hidden rounded-md border text-xs">
               {(["es", "en"] as const).map((l) => (

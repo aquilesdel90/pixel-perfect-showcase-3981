@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useApp } from "@/lib/app-state";
-import { CURRENT, PROGRAM, type AreaId } from "@/lib/config";
+import { PROGRAM, type AreaId } from "@/lib/config";
 import { getBusiness } from "@/lib/mock-data";
 import { AreaDetail } from "@/components/sm/area-detail";
 
@@ -22,8 +22,8 @@ export const Route = createFileRoute("/dueno/area/$area")({
 
 function OwnerArea() {
   const { area } = Route.useLoaderData();
-  const { t } = useApp();
-  const b = getBusiness(CURRENT.ownerBusiness)!;
+  const { t, ownerBusiness } = useApp();
+  const b = getBusiness(ownerBusiness)!;
   return (
     <div className="space-y-3">
       <Link to="/dueno" className="text-sm text-muted-foreground hover:text-foreground">← {t("Mi programa", "My program")}</Link>

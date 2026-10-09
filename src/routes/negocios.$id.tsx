@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useApp } from "@/lib/app-state";
 import { FRANCHISABILITY_THRESHOLD, PROFIT_SPLIT, PROGRAM, type AreaId } from "@/lib/config";
 import { fdate, usd } from "@/lib/format";
-import { ACTIVATE_BELOW, activity, assessmentScores, franchisabilityBreakdown, getBusiness, ownerTeam, SKIP_ABOVE, type Stage } from "@/lib/mock-data";
+import { ACTIVATE_BELOW, activity, assessmentScores, franchisabilityBreakdown, getBusiness, ownerTeam, ownerTeams, SKIP_ABOVE, type Stage } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { AreaDetail } from "@/components/sm/area-detail";
 import { AreaCard, ProgramHeader } from "@/components/sm/program";
@@ -149,7 +149,7 @@ function Program() {
       {tab === "docs" && <DocumentsView businessId={id} />}
       {tab === "finanzas" && (
         <div className="space-y-4">
-          <NumbersView />
+          <NumbersView businessId={id} />
           <Panel title={t("Reparto de utilidades (parámetro, no visible al dueño)", "Profit split (parameter, hidden from owner)")}>
             <div className="grid grid-cols-3 gap-2">
               <Stat label={t("Bishop año 1", "Bishop year 1")} value={`${PROFIT_SPLIT.bishopYear1 * 100}%`} />
@@ -162,7 +162,7 @@ function Program() {
       {tab === "equipo" && (
         <Panel title={t("Dueño y equipo del negocio", "Owner & business team")}>
           <Table head={[t("Nombre", "Name"), t("Rol", "Role"), "Email", t("Estado", "State")]}>
-            {ownerTeam.map((m) => <tr key={m.email}><td className="font-medium">{m.name}</td><td>{m.role}</td><td>{m.email}</td><td><Pill tone={m.state === "Activo" ? "green" : "amber"}>{m.state}</Pill></td></tr>)}
+            {(ownerTeams[id] ?? ownerTeam).map((m) => <tr key={m.email}><td className="font-medium">{m.name}</td><td>{m.role}</td><td>{m.email}</td><td><Pill tone={m.state === "Activo" ? "green" : "amber"}>{m.state}</Pill></td></tr>)}
           </Table>
         </Panel>
       )}
