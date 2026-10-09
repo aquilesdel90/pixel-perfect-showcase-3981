@@ -1,8 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
 import { useApp } from "@/lib/app-state";
 import { FRANCHISABILITY_THRESHOLD, PROFIT_SPLIT } from "@/lib/config";
 import { fdate, usd } from "@/lib/format";
-import { activity, getBusiness, ownerTeam } from "@/lib/mock-data";
+import { activity, franchisabilityBreakdown, getBusiness, ownerTeam, type Stage } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { AreaCard, ProgramHeader } from "@/components/sm/program";
 import { DeliverablesTable, DocumentsView, Gantt, ManualView, NumbersView } from "@/components/sm/sections";
@@ -21,7 +23,7 @@ const TABS = [
 ] as const;
 
 export const Route = createFileRoute("/negocios/$id")({
-  validateSearch: (s: Record<string, unknown>): { tab?: string } => ({ tab: typeof s.tab === "string" ? s.tab : undefined }),
+  validateSearch: (s: Record<string, unknown>): { tab?: string | undefined } => ({ tab: typeof s["tab"] === "string" ? s["tab"] : undefined }),
   loader: async ({ params }) => {
     const b = getBusiness(params.id);
     if (!b) throw notFound();
@@ -36,17 +38,9 @@ export const Route = createFileRoute("/negocios/$id")({
     ],
   }),
   component: Program,
-  errorComponent: ({ error }) => <div role="alert">{error.message}</div>,
+  errorComponent: ({ error }) => <div role="alert">{error instanceof Error ? error.message : String(error)}</div>,
   notFoundComponent: () => <div className="p-6">Negocio no encontrado. <Link to="/negocios" className="text-primary underline">Volver</Link></div>,
 });
-
-const score = [
-  { k: "Manual completo", en: "Manual completion", v: 49 },
-  { k: "Finanzas verificadas", en: "Verified finances", v: 60 },
-  { k: "Opera sin el dueño", en: "Runs without owner", v: 45 },
-  { k: "Cumplimiento", en: "Compliance", v: 75 },
-  { k: "Marca registrable", en: "Registrable brand", v: 62 },
-];
 
 function Program() {
   const { id } = Route.useLoaderData();
@@ -54,12 +48,27 @@ function Program() {
   const { t, lang } = useApp();
   const b = getBusiness(id)!;
   const inProgram = !!b.areas;
+  const score = franchisabilityBreakdown(b);
+  // Local stage so Approve / Discard give visible feedback in the prototype.
+  const [stage, setStage] = useState<Stage>(b.stage);
+  const [notes, setNotes] = useState(activity);
+  const [draft, setDraft] = useState("");
+  const decide = (s: Stage) => {
+    setStage(s);
+    toast.success(s === "approved" ? t(`${b.name} aprobado. Se envía el link de Checkmate al dueño.`, `${b.name} approved. Checkmate link sent to the owner.`) : t(`${b.name} descartado.`, `${b.name} discarded.`));
+  };
+  const addNote = () => {
+    if (!draft.trim()) return;
+    setNotes([{ date: "2026-10-09", who: "Marylin Boraei", text: draft.trim() }, ...notes]);
+    setDraft("");
+    toast.success(t("Nota guardada", "Note saved"));
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2"><h2 className="text-xl font-semibold">{b.name}</h2><StagePill stage={b.stage} /></div>
+          <div className="flex items-center gap-2"><h2 className="text-xl font-semibold">{b.name}</h2><StagePill stage={stage} /></div>
           <div className="text-sm text-muted-foreground">{b.industry} · {b.city} · {b.owner} · {t("Consultor", "Consultant")}: {b.consultant}</div>
         </div>
         <div className="flex gap-4 text-sm">
@@ -70,8 +79,8 @@ function Program() {
       </div>
 
       {inProgram ? <ProgramHeader b={b} /> : (
-        <Panel><p className="text-sm text-muted-foreground">{b.stage === "approved" ? t("Aprobado. Esperando firma del MOU para iniciar el programa de 180 días.", "Approved. Waiting for MOU signature to start the 180-day program.") : b.stage === "evaluated" ? t("Evaluado por el assessment. Pendiente de decisión del equipo SM.", "Evaluated. Pending SM team decision.") : t("Descartado: madurez insuficiente.", "Discarded: insufficient maturity.")}</p>
-          {b.stage === "evaluated" && <div className="mt-3 flex gap-2"><Btn>{t("Aprobar", "Approve")}</Btn><Btn variant="outline">{t("Descartar", "Discard")}</Btn></div>}
+        <Panel><p className="text-sm text-muted-foreground">{stage === "approved" ? t("Aprobado. Se le envió al dueño el link de la evaluación Checkmate; cuando la complete se firma el MOU y arranca el programa de 180 días.", "Approved. The owner received the Checkmate link; once completed the MOU is signed and the 180-day program starts.") : stage === "evaluated" ? t("Evaluado por el assessment. Pendiente de decisión del equipo SM.", "Evaluated. Pending SM team decision.") : t("Descartado: madurez insuficiente.", "Discarded: insufficient maturity.")}</p>
+          {stage === "evaluated" && <div className="mt-3 flex gap-2"><Btn onClick={() => decide("approved")}>{t("Aprobar", "Approve")}</Btn><Btn variant="outline" onClick={() => decide("discarded")}>{t("Descartar", "Discard")}</Btn></div>}
         </Panel>
       )}
 
@@ -90,7 +99,7 @@ function Program() {
             <Bar value={b.franchisability ?? 0} tone="gold" className="mt-2 h-2" />
             <div className="mt-1 text-xs text-muted-foreground">{t("Umbral para presentar a un Bishop", "Threshold to present to a Bishop")}: {FRANCHISABILITY_THRESHOLD}%</div>
             <ul className="mt-4 space-y-2">
-              {score.map((s) => <li key={s.k} className="text-xs"><div className="flex justify-between"><span>{lang === "es" ? s.k : s.en}</span><span className="num">{s.v}%</span></div><Bar value={s.v} className="mt-1" /></li>)}
+              {score.map((s) => <li key={s.es} className="text-xs"><div className="flex justify-between"><span>{lang === "es" ? s.es : s.en}</span><span className="num">{s.v}%</span></div><Bar value={s.v} className="mt-1" /></li>)}
             </ul>
           </Panel>
           <Panel title={t("Entregables próximos y pendientes", "Upcoming & pending deliverables")} className="lg:col-span-2"><DeliverablesTable businessId={id} /></Panel>
@@ -121,9 +130,10 @@ function Program() {
       )}
       {tab === "actividad" && (
         <Panel title={t("Actividad y notas", "Activity & notes")}>
-          <textarea placeholder={t("Agregar nota interna…", "Add internal note…")} className="mb-3 h-20 w-full rounded-md border bg-background p-2 text-sm" />
+          <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={t("Agregar nota interna…", "Add internal note…")} className="mb-2 h-20 w-full rounded-md border bg-background p-2 text-sm" />
+          <div className="mb-3"><Btn onClick={addNote}>{t("Guardar nota", "Save note")}</Btn></div>
           <ul className="space-y-3">
-            {activity.map((a, i) => <li key={i} className="border-l-2 border-gold pl-3 text-sm"><div>{a.text}</div><div className="text-xs text-muted-foreground">{a.who} · {fdate(a.date, lang)}</div></li>)}
+            {notes.map((a, i) => <li key={i} className="border-l-2 border-gold pl-3 text-sm"><div>{a.text}</div><div className="text-xs text-muted-foreground">{a.who} · {fdate(a.date, lang)}</div></li>)}
           </ul>
         </Panel>
       )}

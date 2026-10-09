@@ -47,3 +47,6 @@ export const ASSESSMENT = {
 };
 
 export const TODAY = "2026-10-09";
+
+// Who is "logged in" when switching roles in the prototype.
+export const CURRENT = { ownerBusiness: "vossler", franchise: "bimbo-orl", bishop: "Jefferson Paula" };

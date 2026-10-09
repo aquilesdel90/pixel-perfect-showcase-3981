@@ -114,7 +114,14 @@ export const deliverables: Deliverable[] = [
   { id: "d15", business: "prime10", area: "legal", name: "Licencia de contratista", responsible: "Carla Méndez", start: "2026-09-23", due: "2026-10-06", status: "overdue", attachments: 0 },
   { id: "d16", business: "enyermy", area: "diag", name: "Informe de diagnóstico", responsible: "Marylin Boraei", start: "2026-10-04", due: "2026-10-18", status: "progress", attachments: 0 },
   { id: "d17", business: "enyermy", area: "diag", name: "Cuenta de Google Workspace", responsible: "Aquiles Benítez", start: "2026-10-04", due: "2026-10-09", status: "progress", attachments: 0 },
+  { id: "d18", business: "prime10", area: "diag", name: "Informe de diagnóstico", responsible: "Nicolás García", start: "2026-09-09", due: "2026-09-23", status: "delivered", attachments: 1 },
+  { id: "d19", business: "prime10", area: "proc", name: "Entrevistas con jefes de cuadrilla", responsible: "Nicolás García", start: "2026-10-01", due: "2026-10-20", status: "progress", attachments: 0 },
+  { id: "d20", business: "prime10", area: "marca", name: "Cuestionario de marca", responsible: "Carla Méndez", start: "2026-09-25", due: "2026-10-12", status: "owner", attachments: 0 },
+  { id: "d21", business: "enyermy", area: "diag", name: "Plan del programa y MOU", responsible: "Marylin Boraei", start: "2026-10-10", due: "2026-10-18", status: "planned", attachments: 0 },
 ];
+
+// Day 1 of each program. Used by the Gantt and the "today" marker instead of a hardcoded date.
+export const programStart: Record<string, string> = { vossler: "2026-07-27", prime10: "2026-09-09", enyermy: "2026-10-04", bimbo: "2025-03-02" };
 
 export const manualSections = (businessId: string) => {
   const base = [
@@ -249,4 +256,67 @@ export const ownerTeam = [
   { name: "Daniel Vossler", role: "Dueño", email: "daniel@vosslerbuild.com", state: "Activo" },
   { name: "Ana Vossler", role: "Administración", email: "ana@vosslerbuild.com", state: "Activo" },
   { name: "Luis Prado", role: "Jefe de obra", email: "luis@vosslerbuild.com", state: "Invitado" },
+];
+
+// Franchisability score components, derived from area progress and manual completion
+// so every business gets its own numbers (the criteria themselves are still a draft).
+export const franchisabilityBreakdown = (b: Business) => {
+  const p = (id: AreaId) => b.areas?.find((x) => x.area === id)?.progress ?? 0;
+  const manual = Math.round(manualSections(b.id).reduce((s, x) => s + x.pct, 0) / 6);
+  return [
+    { es: "Manual completo", en: "Manual completion", v: manual },
+    { es: "Finanzas verificadas", en: "Verified finances", v: p("fin") },
+    { es: "Opera sin el dueño", en: "Runs without the owner", v: Math.round(p("proc") * 0.9) },
+    { es: "Cumplimiento", en: "Compliance", v: p("legal") },
+    { es: "Marca registrable", en: "Registrable brand", v: p("marca") },
+  ];
+};
+
+// What the Bishop sees in an opportunity sheet. Numbers are illustrative.
+export const opportunityDetail: Record<string, {
+  es: string; en: string; investment: number; shareYear1: number; shareStable: number; ready: string;
+  projection: { year: number; franchises: number; revenue: number; result: number; bishop: number }[];
+}> = {
+  vossler: {
+    es: "Construcción residencial con 9 años de operación, 14 empleados y 2 cuadrillas. Finanzas ordenadas desde agosto. El manual está al 49% y la marca necesita rediseño para ser registrable.",
+    en: "Residential construction, 9 years in business, 14 employees and 2 crews. Finances cleaned up since August. Manual at 49% and the brand needs a redesign to be registrable.",
+    investment: 150000, shareYear1: 20, shareStable: 14, ready: "2027-01-23",
+    projection: [
+      { year: 1, franchises: 4, revenue: 320000, result: 110000, bishop: 55000 },
+      { year: 2, franchises: 10, revenue: 760000, result: 270000, bishop: 54000 },
+      { year: 3, franchises: 18, revenue: 1300000, result: 490000, bishop: 69000 },
+      { year: 4, franchises: 26, revenue: 1900000, result: 720000, bishop: 101000 },
+      { year: 5, franchises: 35, revenue: 2600000, result: 980000, bishop: 137000 },
+    ],
+  },
+  prime10: {
+    es: "Remodelación residencial en Tampa, 6 años, 9 empleados. Entró al programa hace un mes; todavía sin finanzas verificadas.",
+    en: "Residential remodeling in Tampa, 6 years, 9 employees. Joined the program a month ago; finances not yet verified.",
+    investment: 150000, shareYear1: 25, shareStable: 16, ready: "2027-03-08",
+    projection: [
+      { year: 1, franchises: 3, revenue: 210000, result: 70000, bishop: 35000 },
+      { year: 2, franchises: 8, revenue: 540000, result: 190000, bishop: 47000 },
+      { year: 3, franchises: 14, revenue: 950000, result: 350000, bishop: 56000 },
+      { year: 4, franchises: 20, revenue: 1400000, result: 520000, bishop: 83000 },
+      { year: 5, franchises: 28, revenue: 1950000, result: 740000, bishop: 118000 },
+    ],
+  },
+};
+
+export const bishopAgreements = [
+  { id: "ba1", name: "Acuerdo de participación — Bimbo Tacos", nameEn: "Equity agreement — Bimbo Tacos", with: "Rodrigo Bimbo, Strategic Mates", state: "signed", date: "2025-11-14" },
+  { id: "ba2", name: "NDA Business Bishop", nameEn: "Business Bishop NDA", with: "Strategic Mates", state: "signed", date: "2025-10-30" },
+  { id: "ba3", name: "Acuerdo de participación — Vossler", nameEn: "Equity agreement — Vossler", with: "—", state: "draft", date: "—" },
+];
+
+export const franchiseTasks = [
+  { id: "ft1", es: "Enviar reporte de ventas de octubre", en: "Send October sales report", due: "2026-11-05" },
+  { id: "ft2", es: "Preparar auditoría de estándares del 22 oct", en: "Prepare the Oct 22 standards audit", due: "2026-10-22" },
+  { id: "ft3", es: "Leer manual v1.3, sección Compras (cambió el 28 sep)", en: "Read manual v1.3, Purchasing section (changed Sep 28)", due: "2026-10-15" },
+];
+
+export const franchiseTeam = [
+  { name: "Luisa Paredes", role: "Dueña", roleEn: "Owner", email: "luisa@bimbotacos.com", state: "Activo" },
+  { name: "Tomás Reyes", role: "Encargado de turno", roleEn: "Shift manager", email: "tomas@bimbotacos.com", state: "Activo" },
+  { name: "Equipo de cocina", role: "Operación", roleEn: "Operations", email: "—", state: "Invitado" },
 ];
