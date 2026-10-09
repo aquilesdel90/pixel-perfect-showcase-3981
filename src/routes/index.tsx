@@ -1,6 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { AlertTriangle, Video } from "lucide-react";
+import { AlertTriangle, Columns3, LayoutDashboard, Video } from "lucide-react";
+import { useState } from "react";
 import { useApp } from "@/lib/app-state";
+import { Pipeline } from "@/components/sm/pipeline";
+import { cn } from "@/lib/utils";
 import { pageHead } from "@/lib/head";
 import { businesses, deliverables, events, franchises, getBusiness, WEEK, WEEK_EN } from "@/lib/mock-data";
 import { Bar, Panel, Pill, Table } from "@/components/sm/ui";
@@ -26,9 +29,33 @@ function Funnel() {
   const attention = deliverables.filter((d) => d.status === "overdue" || d.status === "owner");
   const inProgram = businesses.filter((b) => b.stage === "program");
   const week = lang === "es" ? WEEK : WEEK_EN;
+  const [view, setView] = useState<"resumen" | "tablero">("resumen");
+
+  const toggle = (
+    <div className="flex overflow-hidden rounded-md border text-xs">
+      {([["resumen", LayoutDashboard, t("Resumen", "Overview")], ["tablero", Columns3, t("Tablero", "Board")]] as const).map(([k, Icon, label]) => (
+        <button key={k} onClick={() => setView(k)} className={cn("inline-flex items-center gap-1.5 px-3 py-1.5", view === k ? "bg-primary text-primary-foreground" : "hover:bg-muted")}>
+          <Icon className="h-3.5 w-3.5" />{label}
+        </button>
+      ))}
+    </div>
+  );
+
+  if (view === "tablero") {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm text-muted-foreground">{t("Cada negocio en su etapa. Las tarjetas con borde ámbar llevan demasiado tiempo sin moverse.", "Every business at its stage. Amber-bordered cards have sat too long without moving.")}</p>
+          {toggle}
+        </div>
+        <Pipeline />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">{toggle}</div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
         {steps.map((s, i) => (
           <div key={s.label} className="panel relative overflow-hidden px-4 py-3">

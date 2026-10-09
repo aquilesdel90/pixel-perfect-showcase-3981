@@ -1,6 +1,8 @@
 import type { AreaId } from "./config";
 
 export type Stage = "evaluated" | "approved" | "program" | "franchisor" | "discarded";
+// Finer step inside "approved": Checkmate link sent, or Checkmate done and MOU waiting for signature.
+export type Substage = "checkmate" | "mou";
 export type DelivStatus = "planned" | "progress" | "delivered" | "overdue" | "owner";
 
 export const team = [
@@ -15,6 +17,8 @@ export interface AreaState {
   progress: number;
   responsible: string;
   ownerNext: string;
+  skipped?: boolean; // the assessment showed this area is already solid, no work planned
+  skipReason?: string;
 }
 
 export interface Business {
@@ -27,6 +31,8 @@ export interface Business {
   maturity: number;
   level: string;
   stage: Stage;
+  substage?: Substage;
+  stageSince: string; // date the business entered its current stage
   consultant: string;
   day?: number;
   franchisability?: number;
@@ -42,7 +48,7 @@ const a = (area: AreaId, step: number, progress: number, responsible: string, ow
 export const businesses: Business[] = [
   {
     id: "vossler", name: "Vossler", industry: "Construcción residencial", city: "Orlando", owner: "Daniel Vossler",
-    revenue: 1850000, maturity: 59, level: "M3", stage: "program", consultant: "Nicolás García", day: 74,
+    revenue: 1850000, maturity: 59, level: "M3", stage: "program", stageSince: "2026-07-27", consultant: "Nicolás García", day: 74,
     franchisability: 58, assessmentVersion: "v3",
     areas: [
       a("fin", 2, 55, "Marylin Boraei", "Subir estados de cuenta de agosto"),
@@ -53,18 +59,18 @@ export const businesses: Business[] = [
   },
   {
     id: "prime10", name: "Prime 10 Solutions", industry: "Remodelación", city: "Tampa", owner: "Carla Méndez",
-    revenue: 920000, maturity: 51, level: "M3", stage: "program", consultant: "Nicolás García", day: 31,
+    revenue: 920000, maturity: 51, level: "M3", stage: "program", stageSince: "2026-09-09", consultant: "Nicolás García", day: 31,
     franchisability: 34, assessmentVersion: "v3",
     areas: [
       a("fin", 1, 22, "Marylin Boraei", "Enviar acceso a QuickBooks"),
       a("proc", 0, 15, "Nicolás García", "Agendar entrevista con jefe de cuadrilla"),
-      a("marca", 0, 10, "Marylin Boraei", "Completar cuestionario de marca"),
+      { ...a("marca", 0, 0, "—", "—"), skipped: true, skipReason: "Marca registrada y consistente: Ventas y marca dio 84% en el assessment" },
       a("legal", 1, 25, "Aquiles Benítez", "Subir licencia de contratista"),
     ],
   },
   {
     id: "enyermy", name: "Enyermy Hair Studio", industry: "Salón de belleza", city: "Miami", owner: "Enyermy Rojas",
-    revenue: 410000, maturity: 44, level: "M2", stage: "program", consultant: "Marylin Boraei", day: 6,
+    revenue: 410000, maturity: 44, level: "M2", stage: "program", stageSince: "2026-10-04", consultant: "Marylin Boraei", day: 6,
     franchisability: 18, assessmentVersion: "v3",
     areas: [
       a("fin", 0, 0, "Marylin Boraei", "—"),
@@ -75,7 +81,7 @@ export const businesses: Business[] = [
   },
   {
     id: "bimbo", name: "Bimbo Tacos", industry: "Restaurante", city: "Orlando", owner: "Rodrigo Bimbo",
-    revenue: 1240000, maturity: 78, level: "M4", stage: "franchisor", consultant: "Nicolás García", day: 180,
+    revenue: 1240000, maturity: 78, level: "M4", stage: "franchisor", stageSince: "2025-11-14", consultant: "Nicolás García", day: 180,
     franchisability: 91, bishop: "Jefferson Paula", assessmentVersion: "v2",
     areas: [
       a("fin", 5, 100, "Marylin Boraei", "—"),
@@ -84,12 +90,57 @@ export const businesses: Business[] = [
       a("legal", 5, 100, "Aquiles Benítez", "—"),
     ],
   },
-  { id: "melany", name: "Melany 001", industry: "Boutique de ropa", city: "Kissimmee", owner: "Melany Torres", revenue: 380000, maturity: 63, level: "M3", stage: "approved", consultant: "Marylin Boraei", assessmentVersion: "v3" },
-  { id: "carwash", name: "LLc Car Wash", industry: "Lavado de autos", city: "Jacksonville", owner: "Pedro Alvarado", revenue: 560000, maturity: 41, level: "M2", stage: "evaluated", consultant: "Nicolás García", assessmentVersion: "v3" },
-  { id: "ramirez", name: "Taller Ramírez", industry: "Taller mecánico", city: "Hialeah", owner: "Jorge Ramírez", revenue: 210000, maturity: 22, level: "M1", stage: "discarded", consultant: "Marylin Boraei", assessmentVersion: "v2" },
+  {
+    id: "cleanpro", name: "Clean Pro Services", industry: "Limpieza comercial", city: "Fort Lauderdale", owner: "Sofía Lugo",
+    revenue: 1480000, maturity: 81, level: "M4", stage: "program", stageSince: "2026-04-28", consultant: "Marylin Boraei", day: 165,
+    franchisability: 87, assessmentVersion: "v2",
+    areas: [
+      a("fin", 4, 100, "Marylin Boraei", "—"),
+      a("proc", 4, 95, "Nicolás García", "Aprobar sección Personas del manual"),
+      a("marca", 4, 100, "Marylin Boraei", "—"),
+      a("legal", 4, 92, "Aquiles Benítez", "—"),
+    ],
+  },
+  { id: "melany", name: "Melany 001", industry: "Boutique de ropa", city: "Kissimmee", owner: "Melany Torres", revenue: 380000, maturity: 63, level: "M3", stage: "approved", substage: "checkmate", stageSince: "2026-09-29", consultant: "Marylin Boraei", assessmentVersion: "v3" },
+  { id: "dulcehogar", name: "Dulce Hogar Bakery", industry: "Panadería", city: "Doral", owner: "Rosa Quintero", revenue: 640000, maturity: 57, level: "M3", stage: "approved", substage: "mou", stageSince: "2026-10-02", consultant: "Nicolás García", assessmentVersion: "v3" },
+  { id: "carwash", name: "LLc Car Wash", industry: "Lavado de autos", city: "Jacksonville", owner: "Pedro Alvarado", revenue: 560000, maturity: 41, level: "M2", stage: "evaluated", stageSince: "2026-10-05", consultant: "Nicolás García", assessmentVersion: "v3" },
+  { id: "fitgarage", name: "Fit Garage", industry: "Gimnasio boutique", city: "Orlando", owner: "Martín Salas", revenue: 720000, maturity: 66, level: "M4", stage: "evaluated", stageSince: "2026-10-08", consultant: "Marylin Boraei", assessmentVersion: "v3" },
+  { id: "ramirez", name: "Taller Ramírez", industry: "Taller mecánico", city: "Hialeah", owner: "Jorge Ramírez", revenue: 210000, maturity: 22, level: "M1", stage: "discarded", stageSince: "2026-09-20", consultant: "Marylin Boraei", assessmentVersion: "v2" },
 ];
 
 export const getBusiness = (id: string) => businesses.find((b) => b.id === id);
+
+// Assessment result by area (0..100). This is what decides which program areas get work:
+// below ACTIVATE_BELOW the area is activated, above SKIP_ABOVE it is skipped, in between SM decides.
+export const ACTIVATE_BELOW = 60;
+export const SKIP_ABOVE = 80;
+export const ASSESSMENT_AREAS: { es: string; en: string; feeds: AreaId }[] = [
+  { es: "Finanzas y control", en: "Finance & control", feeds: "fin" },
+  { es: "Procesos y calidad", en: "Processes & quality", feeds: "proc" },
+  { es: "Estructura", en: "Structure", feeds: "legal" },
+  { es: "Ventas y marca", en: "Sales & brand", feeds: "marca" },
+  { es: "Personas", en: "People", feeds: "legal" },
+  { es: "Tecnología", en: "Technology", feeds: "proc" },
+  { es: "Gestión", en: "Management", feeds: "fin" },
+  { es: "Cumplimiento", en: "Compliance", feeds: "legal" },
+];
+const scoresById: Record<string, number[]> = {
+  vossler: [33, 42, 67, 71, 73, 75, 67, 67],
+  prime10: [38, 45, 52, 84, 60, 48, 55, 41],
+  enyermy: [30, 35, 48, 62, 55, 40, 44, 50],
+  cleanpro: [85, 78, 80, 88, 76, 82, 79, 83],
+  bimbo: [80, 76, 74, 85, 78, 70, 77, 82],
+  fitgarage: [58, 64, 70, 79, 68, 72, 61, 57],
+  carwash: [35, 40, 44, 50, 42, 38, 39, 41],
+  melany: [60, 58, 66, 72, 64, 59, 61, 63],
+  dulcehogar: [48, 55, 60, 66, 58, 52, 54, 62],
+  ramirez: [18, 22, 25, 28, 20, 15, 24, 22],
+};
+export const assessmentScores = (businessId: string) => {
+  const b = getBusiness(businessId);
+  const s = scoresById[businessId] ?? ASSESSMENT_AREAS.map(() => b?.maturity ?? 0);
+  return ASSESSMENT_AREAS.map((a, i) => ({ ...a, score: s[i] ?? 0 }));
+};
 
 export interface Deliverable {
   id: string; business: string; area: AreaId | "diag" | "cierre"; name: string; responsible: string;
@@ -121,7 +172,7 @@ export const deliverables: Deliverable[] = [
 ];
 
 // Day 1 of each program. Used by the Gantt and the "today" marker instead of a hardcoded date.
-export const programStart: Record<string, string> = { vossler: "2026-07-27", prime10: "2026-09-09", enyermy: "2026-10-04", bimbo: "2025-03-02" };
+export const programStart: Record<string, string> = { vossler: "2026-07-27", prime10: "2026-09-09", enyermy: "2026-10-04", bimbo: "2025-03-02", cleanpro: "2026-04-28" };
 
 export const manualSections = (businessId: string) => {
   const base = [
