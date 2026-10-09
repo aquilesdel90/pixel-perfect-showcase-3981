@@ -2,20 +2,21 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type Tone = "green" | "amber" | "red" | "navy" | "gold" | "grey";
+// Each tone gets a visible border in its own color: a pale fill alone disappears on the grey page background.
 const toneCls: Record<Tone, string> = {
-  green: "bg-success/15 text-success",
-  amber: "bg-warning/20 text-foreground",
-  red: "bg-danger/15 text-danger",
-  navy: "bg-primary/12 text-primary",
-  gold: "bg-gold/25 text-gold-foreground dark:text-gold",
-  grey: "bg-muted text-muted-foreground",
+  green: "border-success/60 bg-success/15 text-success dark:bg-success/20",
+  amber: "border-warning/70 bg-warning/25 text-foreground dark:bg-warning/25",
+  red: "border-danger/60 bg-danger/15 text-danger dark:bg-danger/20",
+  navy: "border-primary/50 bg-primary/12 text-primary dark:border-primary dark:bg-primary/30 dark:text-primary-foreground",
+  gold: "border-gold/80 bg-gold/30 text-gold-foreground dark:text-gold",
+  grey: "border-border bg-muted text-muted-foreground",
 };
 
 // Status tag: square corners and one fixed width so every state lines up in tables and cards.
 // `fit` is for inline labels (a level, a version) that should hug their text instead.
 export function Pill({ tone = "grey", children, dot = true, fit }: { tone?: Tone; children: ReactNode; dot?: boolean; fit?: boolean }) {
   return (
-    <span className={cn("inline-flex items-center justify-center gap-1.5 rounded-sm px-2 py-0.5 text-[11.5px] font-medium leading-5 whitespace-nowrap", !fit && "w-[140px]", toneCls[tone])}>
+    <span className={cn("inline-flex items-center justify-center gap-1.5 rounded-sm border px-2 py-0.5 text-[11.5px] font-medium leading-5 whitespace-nowrap", !fit && "w-[140px]", toneCls[tone])}>
       {dot && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-80" />}
       <span className={cn(!fit && "truncate")}>{children}</span>
     </span>

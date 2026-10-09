@@ -46,7 +46,7 @@ function Portfolio() {
           </Table>
           <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
             {franchises.filter((f) => f.franchisor === biz.id).map((f) => (
-              <li key={f.id} className="flex items-center justify-between"><span>{f.name}</span><Pill tone={f.status === "operating" ? "green" : "amber"}>{f.status === "operating" ? t("Operando", "Operating") : t("Apertura", "Opening") + " " + fdate(f.opening, lang)}</Pill></li>
+              <li key={f.id} className="flex items-center justify-between"><span>{f.name}</span><Pill tone={f.status === "operating" ? "green" : "amber"} fit>{f.status === "operating" ? t("Operando", "Operating") : t("Apertura", "Opening") + " " + fdate(f.opening, lang)}</Pill></li>
             ))}
           </ul>
           <div className="mt-3"><Link to="/bishop/acuerdos" className="text-xs text-primary hover:underline">{t("Ver acuerdos firmados", "See signed agreements")}</Link></div>
