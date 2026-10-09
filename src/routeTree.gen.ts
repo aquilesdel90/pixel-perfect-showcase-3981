@@ -10,12 +10,48 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CalendarioRouteImport } from './routes/calendario'
+import { Route as CatalogoRouteImport } from './routes/catalogo'
+import { Route as ConfiguracionRouteImport } from './routes/configuracion'
+import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as FranquiciasIndexRouteImport } from './routes/franquicias.index'
+import { Route as FranquiciasIdRouteImport } from './routes/franquicias.$id'
 import { Route as NegociosIndexRouteImport } from './routes/negocios.index'
 import { Route as NegociosIdRouteImport } from './routes/negocios.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarioRoute = CalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogoRoute = CatalogoRouteImport.update({
+  id: '/catalogo',
+  path: '/catalogo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracionRoute = ConfiguracionRouteImport.update({
+  id: '/configuracion',
+  path: '/configuracion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FranquiciasIndexRoute = FranquiciasIndexRouteImport.update({
+  id: '/franquicias/',
+  path: '/franquicias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FranquiciasIdRoute = FranquiciasIdRouteImport.update({
+  id: '/franquicias/$id',
+  path: '/franquicias/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NegociosIndexRoute = NegociosIndexRouteImport.update({
@@ -31,31 +67,83 @@ const NegociosIdRoute = NegociosIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calendario': typeof CalendarioRoute
+  '/catalogo': typeof CatalogoRoute
+  '/configuracion': typeof ConfiguracionRoute
+  '/perfil': typeof PerfilRoute
+  '/franquicias/$id': typeof FranquiciasIdRoute
   '/negocios/$id': typeof NegociosIdRoute
+  '/franquicias/': typeof FranquiciasIndexRoute
   '/negocios/': typeof NegociosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/calendario': typeof CalendarioRoute
+  '/catalogo': typeof CatalogoRoute
+  '/configuracion': typeof ConfiguracionRoute
+  '/perfil': typeof PerfilRoute
+  '/franquicias/$id': typeof FranquiciasIdRoute
   '/negocios/$id': typeof NegociosIdRoute
+  '/franquicias': typeof FranquiciasIndexRoute
   '/negocios': typeof NegociosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/calendario': typeof CalendarioRoute
+  '/catalogo': typeof CatalogoRoute
+  '/configuracion': typeof ConfiguracionRoute
+  '/perfil': typeof PerfilRoute
+  '/franquicias/$id': typeof FranquiciasIdRoute
   '/negocios/$id': typeof NegociosIdRoute
+  '/franquicias/': typeof FranquiciasIndexRoute
   '/negocios/': typeof NegociosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/negocios/$id' | '/negocios/'
+  fullPaths:
+    | '/'
+    | '/calendario'
+    | '/catalogo'
+    | '/configuracion'
+    | '/perfil'
+    | '/franquicias/$id'
+    | '/negocios/$id'
+    | '/franquicias/'
+    | '/negocios/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/negocios/$id' | '/negocios'
-  id: '__root__' | '/' | '/negocios/$id' | '/negocios/'
+  to:
+    | '/'
+    | '/calendario'
+    | '/catalogo'
+    | '/configuracion'
+    | '/perfil'
+    | '/franquicias/$id'
+    | '/negocios/$id'
+    | '/franquicias'
+    | '/negocios'
+  id:
+    | '__root__'
+    | '/'
+    | '/calendario'
+    | '/catalogo'
+    | '/configuracion'
+    | '/perfil'
+    | '/franquicias/$id'
+    | '/negocios/$id'
+    | '/franquicias/'
+    | '/negocios/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CalendarioRoute: typeof CalendarioRoute
+  CatalogoRoute: typeof CatalogoRoute
+  ConfiguracionRoute: typeof ConfiguracionRoute
+  PerfilRoute: typeof PerfilRoute
+  FranquiciasIdRoute: typeof FranquiciasIdRoute
   NegociosIdRoute: typeof NegociosIdRoute
+  FranquiciasIndexRoute: typeof FranquiciasIndexRoute
   NegociosIndexRoute: typeof NegociosIndexRoute
 }
 
@@ -66,6 +154,48 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendario': {
+      id: '/calendario'
+      path: '/calendario'
+      fullPath: '/calendario'
+      preLoaderRoute: typeof CalendarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogo': {
+      id: '/catalogo'
+      path: '/catalogo'
+      fullPath: '/catalogo'
+      preLoaderRoute: typeof CatalogoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracion': {
+      id: '/configuracion'
+      path: '/configuracion'
+      fullPath: '/configuracion'
+      preLoaderRoute: typeof ConfiguracionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/franquicias/': {
+      id: '/franquicias/'
+      path: '/franquicias'
+      fullPath: '/franquicias/'
+      preLoaderRoute: typeof FranquiciasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/franquicias/$id': {
+      id: '/franquicias/$id'
+      path: '/franquicias/$id'
+      fullPath: '/franquicias/$id'
+      preLoaderRoute: typeof FranquiciasIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/negocios/': {
@@ -87,7 +217,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CalendarioRoute: CalendarioRoute,
+  CatalogoRoute: CatalogoRoute,
+  ConfiguracionRoute: ConfiguracionRoute,
+  PerfilRoute: PerfilRoute,
+  FranquiciasIdRoute: FranquiciasIdRoute,
   NegociosIdRoute: NegociosIdRoute,
+  FranquiciasIndexRoute: FranquiciasIndexRoute,
   NegociosIndexRoute: NegociosIndexRoute,
 }
 export const routeTree = rootRouteImport
