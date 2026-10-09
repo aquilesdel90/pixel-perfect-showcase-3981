@@ -73,7 +73,7 @@ export function Gantt({ businessId, startDate = "2026-07-28" }: { businessId: st
 export function ManualView({ businessId, canApprove, versions }: { businessId: string; canApprove?: boolean; versions?: boolean }) {
   const { t } = useApp();
   const [secs, setSecs] = useState(() => manualSections(businessId));
-  const [sel, setSel] = useState(secs[0].id);
+  const [sel, setSel] = useState(secs[0]!.id);
   const cur = secs.find((s) => s.id === sel)!;
   const total = Math.round(secs.reduce((s, x) => s + x.pct, 0) / secs.length);
   return (
@@ -170,12 +170,14 @@ export function NumbersView() {
   const { t } = useApp();
   const f = financials.vossler;
   const last = f.revenue.length - 1;
+  const rev = (i: number) => f.revenue[i] ?? 0;
+  const mar = (i: number) => f.margin[i] ?? 0;
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-        <Stat label={t("Facturación (sep)", "Revenue (Sep)")} value={usd(f.revenue[last])} sub={`+${Math.round((f.revenue[last] / f.revenue[0] - 1) * 100)}% ${t("vs mayo", "vs May")}`} />
-        <Stat label={t("Margen neto", "Net margin")} value={`${f.margin[last]}%`} sub={`${t("antes", "before")} ${f.margin[0]}%`} />
-        <Stat label={t("Caja", "Cash")} value={usd(f.cash[last])} />
+        <Stat label={t("Facturación (sep)", "Revenue (Sep)")} value={usd(rev(last))} sub={`+${Math.round((rev(last) / rev(0) - 1) * 100)}% ${t("vs mayo", "vs May")}`} />
+        <Stat label={t("Margen neto", "Net margin")} value={`${mar(last)}%`} sub={`${t("antes", "before")} ${mar(0)}%`} />
+        <Stat label={t("Caja", "Cash")} value={usd(f.cash[last] ?? 0)} />
         <Stat label={t("Fuente", "Source")} value="QuickBooks" sub={t("Sincronizado hoy", "Synced today")} />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">

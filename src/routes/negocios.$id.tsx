@@ -21,7 +21,7 @@ const TABS = [
 ] as const;
 
 export const Route = createFileRoute("/negocios/$id")({
-  validateSearch: (s: Record<string, unknown>): { tab?: string } => ({ tab: typeof s.tab === "string" ? s.tab : undefined }),
+  validateSearch: (s: Record<string, unknown>): { tab?: string | undefined } => ({ tab: typeof s["tab"] === "string" ? (s["tab"] as string) : undefined }),
   loader: async ({ params }) => {
     const b = getBusiness(params.id);
     if (!b) throw notFound();
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/negocios/$id")({
     ],
   }),
   component: Program,
-  errorComponent: ({ error }) => <div role="alert">{error.message}</div>,
+  errorComponent: ({ error }) => <div role="alert">{(error as Error).message}</div>,
   notFoundComponent: () => <div className="p-6">Negocio no encontrado. <Link to="/negocios" className="text-primary underline">Volver</Link></div>,
 });
 

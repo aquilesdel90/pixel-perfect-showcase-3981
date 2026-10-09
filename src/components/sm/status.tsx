@@ -30,7 +30,7 @@ export function DelivPill({ status }: { status: DelivStatus }) {
 
 export function DocPill({ state }: { state: string }) {
   const { t } = useApp();
-  const m: Record<string, [Parameters<typeof Pill>[0]["tone"], string]> = {
+  const m: Record<string, ["green" | "amber" | "red" | "navy" | "gold" | "grey", string]> = {
     requested: ["amber", t("Solicitado", "Requested")],
     received: ["navy", t("Recibido", "Received")],
     reviewed: ["green", t("Revisado", "Reviewed")],

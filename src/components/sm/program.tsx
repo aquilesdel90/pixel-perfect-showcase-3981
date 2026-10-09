@@ -37,7 +37,7 @@ export function ProgramHeader({ b }: { b: Business }) {
   );
 }
 
-function Gate({ name, range, state, note }: { name: string; range: string; state: "done" | "active" | "locked"; note?: string }) {
+function Gate({ name, range, state, note }: { name: string; range: string; state: "done" | "active" | "locked"; note?: string | undefined }) {
   const { t } = useApp();
   return (
     <div className={cn("flex flex-col justify-center rounded-md border-2 p-3",
@@ -56,7 +56,7 @@ function Gate({ name, range, state, note }: { name: string; range: string; state
 function AreaColumn({ a, locked }: { a: AreaState; locked: boolean }) {
   const { lang, t } = useApp();
   const area = PROGRAM.areas.find((x) => x.id === a.area)!;
-  const step = PROGRAM.steps[Math.min(a.step, 4)];
+  const step = PROGRAM.steps[Math.min(a.step, 4)]!;
   return (
     <div className={cn("rounded-md border bg-background/60 p-3", locked && "opacity-60")}>
       <div className="font-display text-sm font-semibold">{area[lang]}</div>

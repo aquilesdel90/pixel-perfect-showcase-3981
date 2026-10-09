@@ -72,7 +72,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <div className="flex-1 space-y-0.5 p-2">
         {items.map((i) => (
-          <Link key={i.to} to={i.to} activeOptions={{ exact: i.exact }} onClick={() => setOpen(false)}
+          <Link key={i.to} to={i.to} activeOptions={{ exact: !!i.exact }} onClick={() => setOpen(false)}
             className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-rail-muted transition-colors hover:bg-rail-active hover:text-rail-foreground data-[status=active]:bg-rail-active data-[status=active]:text-rail-foreground data-[status=active]:shadow-[inset_3px_0_0_var(--color-gold)]">
             <i.icon className="h-4 w-4" />{i[lang]}
           </Link>
