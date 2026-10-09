@@ -28,12 +28,12 @@ export function ProgramHeader({ b, renderArea = (_a, node) => node }: { b: Busin
       </div>
       <div className="grid gap-2 lg:grid-cols-[150px_1fr_150px]">
         <Gate name={diag[lang]} range={`${t("Días", "Days")} ${diag.start}–${diag.end}`} state={diagDone ? "done" : "active"} />
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
           {(b.areas ?? []).map((a) => <div key={a.area}>{renderArea(a, <AreaColumn a={a} locked={!diagDone} />)}</div>)}
         </div>
         <Gate name={cierre[lang]} range={`${t("Días", "Days")} ${cierre.start}–${cierre.end}`}
           state={b.stage === "franchisor" ? "done" : closeOpen ? "active" : "locked"}
-          note={!closeOpen ? t("Se abre cuando las 4 áreas estén validadas", "Opens when all 4 areas are validated") : undefined} />
+          note={!closeOpen ? t("Se abre cuando todas las áreas activas estén validadas", "Opens when every active area is validated") : undefined} />
       </div>
     </div>
   );

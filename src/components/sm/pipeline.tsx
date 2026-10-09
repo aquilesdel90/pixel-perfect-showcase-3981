@@ -15,7 +15,7 @@ const COLUMNS: { id: ColumnId; es: string; en: string; hint: string; hintEn: str
   { id: "evaluated", es: "Evaluado", en: "Evaluated", hint: "Assessment con puntaje; SM arma el plan según las áreas débiles", hintEn: "Scored assessment; SM builds the plan from the weak areas" },
   { id: "checkmate", es: "Aceptado", en: "Accepted", hint: "SM aceptó; arma el plan y prepara el contrato", hintEn: "SM accepted; builds the plan and prepares the contract" },
   { id: "mou", es: "Contrato por firmar", en: "Contract pending", hint: "Enviado por DocuSeal; al firmar arranca el día 1", hintEn: "Sent via DocuSeal; day 1 starts on signature" },
-  { id: "program", es: "En programa", en: "In program", hint: "180 días, cuatro áreas en paralelo", hintEn: "180 days, four areas in parallel" },
+  { id: "program", es: "En programa", en: "In program", hint: "180 días, las áreas activas en paralelo", hintEn: "180 days, active areas in parallel" },
   { id: "bishop", es: "Lista para Bishop", en: "Ready for Bishop", hint: `Semáforo ≥ ${FRANCHISABILITY_THRESHOLD}%, se presenta al inversor`, hintEn: `Readiness ≥ ${FRANCHISABILITY_THRESHOLD}%, presented to the investor` },
   { id: "franchisor", es: "Franquiciadora", en: "Franchisor", hint: "Acuerdo firmado, crea franquicias", hintEn: "Agreement signed, creates franchises" },
 ];
@@ -77,7 +77,8 @@ function Card({ b, col }: { b: Business; col: ColumnId }) {
   const { t } = useApp();
   const days = daysSince(b.stageSince);
   const stale = (col === "checkmate" && days > 7) || (col === "evaluated" && days > 3) || (col === "mou" && days > 10);
-  const prog = Math.round((b.areas ?? []).reduce((s, a) => s + a.progress, 0) / 4);
+  const active = (b.areas ?? []).filter((a) => !a.skipped);
+  const prog = Math.round(active.reduce((s, a) => s + a.progress, 0) / Math.max(1, active.length));
   return (
     <Link to="/negocios/$id" params={{ id: b.id }} className={cn("block rounded-md border bg-card p-2.5 text-sm shadow-xs transition-colors hover:border-primary/50", stale && "border-warning/60")}>
       <div className="flex items-start justify-between gap-2">

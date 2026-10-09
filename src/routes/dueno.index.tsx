@@ -108,7 +108,7 @@ function ProgramView({ b }: { b: Business }) {
           <h3 className="font-display font-semibold">{t("Cómo va cada área", "How each area is going")}</h3>
           <span className="text-xs text-muted-foreground">{t("Relevar · Diseñar · Implementar · Validar · Documentar", "Survey · Design · Implement · Validate · Document")}</span>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {(b.areas ?? []).map((a) => a.skipped ? <AreaCard key={a.area} a={a} /> : (
             <Link key={a.area} to="/dueno/area/$area" params={{ area: a.area }} className="block"><AreaCard a={a} clickable /></Link>
           ))}

@@ -103,7 +103,8 @@ function Funnel() {
       <Panel title={t("Negocios en programa", "Businesses in program")}>
         <Table head={[t("Negocio", "Business"), t("Consultor", "Consultant"), t("Día", "Day"), t("Avance", "Progress"), t("Franquiciabilidad", "Franchisability"), "Bishop"]}>
           {inProgram.map((b) => {
-            const prog = Math.round((b.areas ?? []).reduce((s, a) => s + a.progress, 0) / 4);
+            const active = (b.areas ?? []).filter((a) => !a.skipped);
+            const prog = Math.round(active.reduce((s, a) => s + a.progress, 0) / Math.max(1, active.length));
             return (
               <tr key={b.id} className="cursor-pointer hover:bg-muted/60" onClick={() => navigate({ to: "/negocios/$id", params: { id: b.id } })}>
                 <td><div className="font-medium">{b.name}</div><div className="text-xs text-muted-foreground">{b.industry} · {b.city}</div></td>

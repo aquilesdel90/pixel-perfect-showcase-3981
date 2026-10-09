@@ -132,7 +132,7 @@ function Program() {
       )}
       {tab === "areas" && !inProgram && <Empty />}
       {tab === "areas" && inProgram && !areaId && (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {b.areas!.map((a) => a.skipped ? <AreaCard key={a.area} a={a} /> : (
             <Link key={a.area} to="/negocios/$id" params={{ id }} search={{ tab: "areas", area: a.area }} className="block"><AreaCard a={a} clickable /></Link>
           ))}

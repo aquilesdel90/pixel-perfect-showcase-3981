@@ -55,6 +55,7 @@ export const businesses: Business[] = [
       a("proc", 2, 48, "Nicolás García", "Revisar mapa de procesos de obra"),
       a("marca", 1, 32, "Marylin Boraei", "Aprobar propuesta de logo"),
       a("legal", 3, 71, "Aquiles Benítez", "Firmar acuerdo de confidencialidad del equipo"),
+      a("tec", 1, 38, "Aquiles Benítez", "Enviar lista de programas y suscripciones que usan hoy"),
     ],
   },
   {
@@ -66,6 +67,7 @@ export const businesses: Business[] = [
       a("proc", 0, 15, "Nicolás García", "Agendar entrevista con jefe de cuadrilla"),
       { ...a("marca", 0, 0, "—", "—"), skipped: true, skipReason: "Marca registrada y consistente: Ventas y marca dio 84% en el assessment" },
       a("legal", 1, 25, "Aquiles Benítez", "Subir licencia de contratista"),
+      a("tec", 0, 12, "Aquiles Benítez", "Dar acceso al CRM actual"),
     ],
   },
   {
@@ -77,6 +79,7 @@ export const businesses: Business[] = [
       a("proc", 0, 0, "Nicolás García", "—"),
       a("marca", 0, 0, "Marylin Boraei", "—"),
       a("legal", 0, 0, "Aquiles Benítez", "—"),
+      a("tec", 0, 0, "Aquiles Benítez", "—"),
     ],
   },
   {
@@ -88,6 +91,7 @@ export const businesses: Business[] = [
       a("proc", 5, 100, "Nicolás García", "—"),
       a("marca", 5, 100, "Marylin Boraei", "—"),
       a("legal", 5, 100, "Aquiles Benítez", "—"),
+      a("tec", 5, 100, "Aquiles Benítez", "—"),
     ],
   },
   {
@@ -99,6 +103,7 @@ export const businesses: Business[] = [
       a("proc", 4, 95, "Nicolás García", "Aprobar sección Personas del manual"),
       a("marca", 4, 100, "Marylin Boraei", "—"),
       a("legal", 4, 92, "Aquiles Benítez", "—"),
+      { ...a("tec", 0, 0, "—", "—"), skipped: true, skipReason: "Tecnología dio 82% en el assessment: sistemas ya definidos, accesos por rol y respaldos probados" },
     ],
   },
   { id: "melany", name: "Melany 001", industry: "Boutique de ropa", city: "Kissimmee", owner: "Melany Torres", revenue: 380000, maturity: 63, level: "M3", stage: "approved", substage: "checkmate", stageSince: "2026-09-29", consultant: "Marylin Boraei", assessmentVersion: "v3" },
@@ -120,12 +125,12 @@ export const ASSESSMENT_AREAS: { es: string; en: string; feeds: AreaId }[] = [
   { es: "Estructura", en: "Structure", feeds: "legal" },
   { es: "Ventas y marca", en: "Sales & brand", feeds: "marca" },
   { es: "Personas", en: "People", feeds: "legal" },
-  { es: "Tecnología", en: "Technology", feeds: "proc" },
+  { es: "Tecnología", en: "Technology", feeds: "tec" },
   { es: "Gestión", en: "Management", feeds: "fin" },
   { es: "Cumplimiento", en: "Compliance", feeds: "legal" },
 ];
 const scoresById: Record<string, number[]> = {
-  vossler: [33, 42, 67, 71, 73, 75, 67, 67],
+  vossler: [33, 42, 67, 71, 73, 52, 67, 67],
   prime10: [38, 45, 52, 84, 60, 48, 55, 41],
   enyermy: [30, 35, 48, 62, 55, 40, 44, 50],
   cleanpro: [85, 78, 80, 88, 76, 82, 79, 83],
@@ -169,6 +174,10 @@ export const deliverables: Deliverable[] = [
   { id: "d11", business: "vossler", area: "legal", name: "Estructura LLC y operating agreement", responsible: "Aquiles Benítez", start: "2026-08-12", due: "2026-09-12", status: "delivered", attachments: 2, review: "accepted" },
   { id: "d12", business: "vossler", area: "legal", name: "Registro de marca (USPTO)", responsible: "Aquiles Benítez", start: "2026-09-15", due: "2026-11-30", status: "progress", attachments: 1 },
   { id: "d25", business: "vossler", area: "legal", name: "Organigrama con alternos", responsible: "Marylin Boraei", start: "2026-10-20", due: "2026-11-20", status: "planned", attachments: 0 },
+  { id: "d27", business: "vossler", area: "tec", name: "Inventario de sistemas y accesos", responsible: "Aquiles Benítez", start: "2026-09-15", due: "2026-10-05", status: "delivered", attachments: 1, review: "accepted", description: "Qué programas usa el negocio, quién tiene acceso a qué y qué se paga por mes." },
+  { id: "d28", business: "vossler", area: "tec", name: "Lista de programas y suscripciones", responsible: "Daniel Vossler", start: "2026-10-06", due: "2026-10-14", status: "owner", attachments: 0, description: "El dueño confirma la lista y agrega lo que falte (planillas, WhatsApp, apps de obra)." },
+  { id: "d29", business: "vossler", area: "tec", name: "CRM y cotizador conectados a QuickBooks", responsible: "Aquiles Benítez", start: "2026-10-15", due: "2026-11-15", status: "planned", attachments: 0, description: "Un solo flujo: presupuesto, obra, factura. Sin volver a cargar datos." },
+  { id: "d30", business: "vossler", area: "tec", name: "Respaldos automáticos y accesos por rol", responsible: "Aquiles Benítez", start: "2026-11-10", due: "2026-12-10", status: "planned", attachments: 0 },
   { id: "d13", business: "vossler", area: "cierre", name: "Manual de operaciones v1", responsible: "Nicolás García", start: "2027-01-08", due: "2027-02-05", status: "planned", attachments: 0 },
   { id: "d14", business: "prime10", area: "fin", name: "Separación de cuentas y QuickBooks", responsible: "Marylin Boraei", start: "2026-09-23", due: "2026-10-25", status: "progress", attachments: 0 },
   { id: "d15", business: "prime10", area: "legal", name: "Licencia de contratista", responsible: "Carla Méndez", start: "2026-09-23", due: "2026-10-06", status: "overdue", attachments: 0 },
