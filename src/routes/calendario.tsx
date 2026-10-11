@@ -37,8 +37,8 @@ function Calendar() {
           </select>
           <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded bg-primary" />{t("Reunión SM", "SM meeting")}</span>
-            <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded bg-gold" />{t("Vencimiento", "Due date")}</span>
-            <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded bg-muted-foreground/30" />{t("Evento del cliente", "Client event")}</span>
+            <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-sm border border-gold-dark bg-gold" />{t("Vencimiento", "Due date")}</span>
+            <span className="inline-flex items-center gap-1"><span className="h-3 w-3 rounded-sm border border-muted-foreground/50 bg-muted-foreground/20" />{t("Evento del cliente", "Client event")}</span>
           </div>
         </div>
       )}
@@ -52,7 +52,7 @@ function Calendar() {
             <div className="px-2 py-1 text-muted-foreground">{t("Todo el día", "All day")}</div>
             {week.map((d, i) => (
               <div key={d} className="min-h-7 space-y-0.5 border-l p-0.5">
-                {list.filter((e) => e.kind === "due" && e.day === i).map((e) => <div key={e.id} className="truncate rounded bg-gold px-1 text-gold-foreground">{e.title}</div>)}
+                {list.filter((e) => e.kind === "due" && e.day === i).map((e) => <div key={e.id} className="truncate rounded-sm border border-gold-dark bg-gold px-1 text-gold-foreground">{e.title}</div>)}
               </div>
             ))}
           </div>
@@ -64,7 +64,7 @@ function Calendar() {
                 {list.filter((e) => e.kind !== "due" && e.day === i).map((e) => (
                   <div key={e.id} title={e.kind === "client" ? t("Evento del cliente — no editable", "Client event — not editable") : ""}
                     className={cn("absolute inset-x-1 overflow-hidden rounded px-1.5 py-1 text-[11px] leading-tight",
-                      e.kind === "client" ? "cursor-not-allowed bg-muted-foreground/20 text-muted-foreground" : "cursor-pointer bg-primary text-primary-foreground")}
+                      e.kind === "client" ? "cursor-not-allowed border border-muted-foreground/50 bg-muted-foreground/15 text-muted-foreground" : "cursor-pointer border border-navy-deep bg-primary text-primary-foreground dark:border-navy-mid")}
                     style={{ top: (e.start - 8) * H + 1, height: e.dur * H - 2 }}>
                     <div className="flex items-center gap-1 font-medium">{e.meet && <Video className="h-3 w-3" />}{e.title}</div>
                     <div className="opacity-80">{getBusiness(e.business)?.name}</div>

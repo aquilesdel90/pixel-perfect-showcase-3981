@@ -22,7 +22,7 @@ export function ProgramHeader({ b, renderArea = (_a, node) => node }: { b: Busin
     <div className="panel p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>{t("Día", "Day")} <b className="num text-foreground">{day}</b> {t("de", "of")} {PROGRAM.totalDays}</span>
-        <div className="relative h-1.5 w-full max-w-md overflow-hidden rounded-full bg-muted sm:w-1/2">
+        <div className="relative h-1.5 w-full max-w-md overflow-hidden rounded-sm bg-muted sm:w-1/2">
           <div className="h-full bg-gold" style={{ width: `${(day / PROGRAM.totalDays) * 100}%` }} />
         </div>
       </div>
@@ -43,7 +43,7 @@ function Gate({ name, range, state, note }: { name: string; range: string; state
   const { t } = useApp();
   return (
     <div className={cn("flex flex-col justify-center rounded-md border-2 p-3",
-      state === "done" && "border-success/50 bg-success/5", state === "active" && "border-gold bg-gold/10", state === "locked" && "border-dashed bg-muted/50")}>
+      state === "done" && "border-success/50 bg-success/5", state === "active" && "border-gold bg-card", state === "locked" && "border-dashed bg-muted/50")}>
       <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
         {state === "done" ? <Check className="h-3.5 w-3.5 text-success" /> : state === "locked" ? <Lock className="h-3.5 w-3.5" /> : null}
         {t("Compuerta", "Gate")}
@@ -64,8 +64,8 @@ function AreaColumn({ a, locked }: { a: AreaState; locked: boolean }) {
       <div className="rounded-md border border-dashed bg-muted/40 p-3 text-muted-foreground" title={a.skipReason}>
         <div className="font-display text-sm font-semibold line-through decoration-muted-foreground/60">{area[lang]}</div>
         <div className="mt-0.5 text-xs">{t("No requerida según el assessment", "Not needed per the assessment")}</div>
-        <div className="mt-2 h-1.5 rounded-full bg-muted" />
-        <div className="mt-2 flex gap-1">{PROGRAM.steps.map((_, i) => <span key={i} className="h-1 flex-1 rounded-full bg-muted" />)}</div>
+        <div className="mt-2 h-1.5 rounded-sm bg-muted" />
+        <div className="mt-2 flex gap-1">{PROGRAM.steps.map((_, i) => <span key={i} className="h-1 flex-1 rounded-sm bg-muted" />)}</div>
       </div>
     );
   }
@@ -88,7 +88,7 @@ export function StepDots({ step }: { step: number }) {
   return (
     <div className="mt-2 flex gap-1">
       {PROGRAM.steps.map((_, i) => (
-        <span key={i} className={cn("h-1 flex-1 rounded-full", i < step ? "bg-success" : i === step ? "bg-gold" : "bg-muted")} />
+        <span key={i} className={cn("h-1 flex-1 rounded-sm", i < step ? "bg-success" : i === step ? "bg-gold" : "bg-muted")} />
       ))}
     </div>
   );
@@ -102,7 +102,7 @@ export function AreaCard({ a, clickable }: { a: AreaState; clickable?: boolean }
       <div className="panel border-dashed p-4 text-muted-foreground">
         <div className="font-display font-semibold line-through decoration-muted-foreground/60">{area[lang]}</div>
         <div className="mt-1 text-xs">{t("No requerida en este programa.", "Not needed in this program.")}</div>
-        {a.skipReason && <div className="mt-2 rounded-md bg-muted px-3 py-2 text-xs">{a.skipReason}</div>}
+        {a.skipReason && <div className="mt-2 rounded-md border bg-muted px-3 py-2 text-xs">{a.skipReason}</div>}
       </div>
     );
   }
@@ -118,8 +118,8 @@ export function AreaCard({ a, clickable }: { a: AreaState; clickable?: boolean }
       <ol className="mt-3 grid grid-cols-5 gap-1">
         {PROGRAM.steps.map((s, i) => (
           <li key={i} className="text-center">
-            <div className={cn("mx-auto mb-1 flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold",
-              i < a.step ? "bg-success text-primary-foreground" : i === a.step ? "bg-gold text-gold-foreground" : "bg-muted text-muted-foreground")}>
+            <div className={cn("mx-auto mb-1 flex h-6 w-6 items-center justify-center rounded-sm border text-[11px] font-semibold",
+              i < a.step ? "border-success bg-success text-white dark:text-navy-deep" : i === a.step ? "border-gold-dark bg-gold text-gold-foreground" : "border-input/70 bg-muted text-muted-foreground")}>
               {i < a.step ? <Check className="h-3 w-3" /> : i + 1}
             </div>
             <div className={cn("text-[11px] leading-tight", i === a.step ? "font-semibold" : "text-muted-foreground")}>{s[lang]}</div>
@@ -127,7 +127,7 @@ export function AreaCard({ a, clickable }: { a: AreaState; clickable?: boolean }
         ))}
       </ol>
       {a.ownerNext !== "—" && (
-        <div className="mt-3 rounded-md bg-muted px-3 py-2 text-xs">
+        <div className="mt-3 rounded-md border bg-muted px-3 py-2 text-xs">
           <span className="text-muted-foreground">{t("Próximo del dueño", "Owner next")}: </span>{a.ownerNext}
         </div>
       )}

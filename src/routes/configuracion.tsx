@@ -65,7 +65,7 @@ function Settings() {
           <Panel title={`${ASSESSMENT.questions} ${t("preguntas en 8 áreas · escala 0–3", "questions in 8 areas · 0–3 scale")}`}>
             <div className="flex flex-wrap gap-1.5">{ASSESSMENT.areas.map((a) => <Pill key={a} tone="navy">{a}</Pill>)}</div>
             <div className="mt-4 grid grid-cols-5 gap-1 text-center text-xs">
-              {ASSESSMENT.levels.map((l) => <div key={l.level} className="rounded-md bg-muted p-2"><b>{l.level}</b><div className="text-muted-foreground">≥{l.min}%</div></div>)}
+              {ASSESSMENT.levels.map((l) => <div key={l.level} className="rounded-md border bg-muted p-2"><b>{l.level}</b><div className="text-muted-foreground">≥{l.min}%</div></div>)}
             </div>
           </Panel>
         </div>

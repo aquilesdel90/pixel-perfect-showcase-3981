@@ -3,13 +3,14 @@ import { cn } from "@/lib/utils";
 
 type Tone = "green" | "amber" | "red" | "navy" | "gold" | "grey";
 // Each tone gets a visible border in its own color: a pale fill alone disappears on the grey page background.
+// Gold is the single highlighted badge: gold-dark border, light gold fill, black text (gold text is never body copy).
 const toneCls: Record<Tone, string> = {
-  green: "border-success/60 bg-success/15 text-success dark:bg-success/20",
-  amber: "border-warning/70 bg-warning/25 text-foreground dark:bg-warning/25",
-  red: "border-danger/60 bg-danger/15 text-danger dark:bg-danger/20",
-  navy: "border-primary/50 bg-primary/12 text-primary dark:border-primary dark:bg-primary/30 dark:text-primary-foreground",
-  gold: "border-gold/80 bg-gold/30 text-gold-foreground dark:text-gold",
-  grey: "border-border bg-muted text-muted-foreground",
+  green: "border-success/70 bg-success/10 text-success dark:bg-success/15",
+  amber: "border-warning/80 bg-warning/15 text-foreground dark:bg-warning/20",
+  red: "border-danger/70 bg-danger/10 text-danger dark:bg-danger/15",
+  navy: "border-navy-mid bg-secondary text-primary dark:bg-secondary dark:text-foreground",
+  gold: "border-gold-dark bg-gold-light/35 text-foreground dark:border-gold dark:bg-gold/15",
+  grey: "border-input/70 bg-muted text-muted-foreground",
 };
 
 // Status tag: square corners and one fixed width so every state lines up in tables and cards.
@@ -26,8 +27,8 @@ export function Pill({ tone = "grey", children, dot = true, fit }: { tone?: Tone
 export function Bar({ value, tone = "navy", className }: { value: number; tone?: "navy" | "gold" | "green" | "amber" | "red"; className?: string }) {
   const c = { navy: "bg-primary", gold: "bg-gold", green: "bg-success", amber: "bg-warning", red: "bg-danger" }[tone];
   return (
-    <div className={cn("h-1.5 w-full overflow-hidden rounded-full bg-muted", className)}>
-      <div className={cn("h-full rounded-full", c)} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
+    <div className={cn("h-1.5 w-full overflow-hidden rounded-sm bg-muted", className)}>
+      <div className={cn("h-full rounded-sm", c)} style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
     </div>
   );
 }
@@ -36,8 +37,8 @@ export function Panel({ title, action, children, className }: { title?: ReactNod
   return (
     <section className={cn("panel", className)}>
       {title && (
-        <header className="flex items-center justify-between gap-2 border-b bg-muted/40 px-4 py-2.5">
-          <h3 className="font-display text-sm font-semibold">{title}</h3>
+        <header className="flex items-center justify-between gap-2 border-b bg-muted/60 px-4 py-2.5">
+          <h3 className="text-sm font-semibold">{title}</h3>
           {action}
         </header>
       )}
@@ -49,7 +50,7 @@ export function Panel({ title, action, children, className }: { title?: ReactNod
 // KPI tile. `tone` paints a left accent and tints the number so the key figure stands out from its neighbours.
 export function Stat({ label, value, sub, tone }: { label: string; value: ReactNode; sub?: ReactNode; tone?: "navy" | "gold" | "green" | "amber" | "red" }) {
   const accent = tone ? { navy: "border-l-primary", gold: "border-l-gold", green: "border-l-success", amber: "border-l-warning", red: "border-l-danger" }[tone] : "";
-  const text = tone ? { navy: "text-primary", gold: "text-gold-foreground dark:text-gold", green: "text-success", amber: "text-foreground", red: "text-danger" }[tone] : "";
+  const text = tone ? { navy: "text-primary", gold: "text-foreground", green: "text-success", amber: "text-foreground", red: "text-danger" }[tone] : "";
   return (
     <div className={cn("panel px-4 py-3", tone && cn("border-l-4", accent))}>
       <div className="eyebrow">{label}</div>
@@ -79,13 +80,13 @@ export function Table({ head, children }: { head: ReactNode[]; children: ReactNo
 export function Btn({ children, variant = "primary", onClick, className }: { children: ReactNode; variant?: "primary" | "gold" | "ghost" | "outline"; onClick?: () => void; className?: string }) {
   // Every button has a real border and a pressed state; no floating pills.
   const v = {
-    primary: "border-primary bg-primary text-primary-foreground hover:bg-primary/90",
-    gold: "border-gold-foreground/40 bg-gold text-gold-foreground hover:bg-gold/90",
+    primary: "border-primary bg-primary text-primary-foreground hover:border-navy-deep hover:bg-navy-deep dark:hover:bg-primary/90",
+    gold: "border-gold-dark bg-gold text-gold-foreground hover:bg-gold-dark",
     ghost: "border-transparent hover:border-border hover:bg-muted",
-    outline: "border-input bg-card hover:bg-muted",
+    outline: "border-input bg-card hover:border-navy-mid hover:bg-muted",
   }[variant];
   return (
-    <button onClick={onClick} className={cn("inline-flex h-8 items-center gap-1.5 rounded-sm border px-3 text-sm font-medium transition-colors active:translate-y-px", v, className)}>
+    <button onClick={onClick} className={cn("inline-flex h-8 items-center gap-1.5 rounded-sm border px-3 font-display text-sm font-semibold transition-colors active:translate-y-px", v, className)}>
       {children}
     </button>
   );
@@ -128,7 +129,7 @@ export function Bars({ values, labels, height = 140 }: { values: number[]; label
     <div className="flex items-end gap-3" style={{ height }}>
       {values.map((v, i) => (
         <div key={i} className="flex flex-1 flex-col items-center gap-1">
-          <div className="w-full rounded-t bg-primary/80" style={{ height: `${(v / max) * (height - 24)}px` }} />
+          <div className="w-full rounded-t-sm bg-primary" style={{ height: `${(v / max) * (height - 24)}px` }} />
           <span className="text-xs text-muted-foreground">{labels[i]}</span>
         </div>
       ))}

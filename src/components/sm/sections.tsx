@@ -52,8 +52,9 @@ export function Gantt({ businessId }: { businessId: string }) {
         </div>
         <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 ml-56 right-0">
-            <div className="absolute inset-y-0 bg-gold/10" style={{ left: 0, width: pct(15) }} />
-            <div className="absolute inset-y-0 bg-gold/10" style={{ left: pct(150), right: 0 }} />
+            {/* Diagnosis and closing windows: a light-blue band, since gold is never used as a large fill. */}
+            <div className="absolute inset-y-0 border-x border-navy-mid/30 bg-secondary/50" style={{ left: 0, width: pct(15) }} />
+            <div className="absolute inset-y-0 border-x border-navy-mid/30 bg-secondary/50" style={{ left: pct(150), right: 0 }} />
             <div className="absolute inset-y-0 w-px bg-danger" style={{ left: pct(today) }} title={`${t("Hoy, día", "Today, day")} ${today}`} />
           </div>
           {rows.map((d) => {

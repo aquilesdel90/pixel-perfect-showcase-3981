@@ -69,7 +69,7 @@ export function AreaDetail({ b, areaId, role }: { b: Business; areaId: AreaId; r
             <span><b>{pending.length}</b> {t("pendientes", "pending")}</span>
           </div>
         </div>
-        <div className="mt-3 rounded-md bg-muted px-3 py-2 text-xs"><span className="text-muted-foreground">{t("Se valida cuando", "Validated when")}: </span>{lang === "es" ? area.validate : area.validateEn}</div>
+        <div className="mt-3 rounded-md border bg-muted px-3 py-2 text-xs"><span className="text-muted-foreground">{t("Se valida cuando", "Validated when")}: </span>{lang === "es" ? area.validate : area.validateEn}</div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -137,8 +137,8 @@ export function AreaDetail({ b, areaId, role }: { b: Business; areaId: AreaId; r
 function Column({ title, tone, items, empty, children }: { title: string; tone: "green" | "navy" | "grey"; items: Deliverable[]; empty: string; children: (d: Deliverable) => React.ReactNode }) {
   const bar = { green: "bg-success", navy: "bg-primary", grey: "bg-muted-foreground/40" }[tone];
   return (
-    <div className="rounded-md bg-muted/50 p-2">
-      <div className="flex items-center gap-2 px-1 pb-2"><span className={cn("h-2.5 w-2.5 rounded-full", bar)} /><span className="text-sm font-semibold">{title}</span><span className="num ml-auto rounded-full bg-card px-2 text-xs">{items.length}</span></div>
+    <div className="rounded-md border bg-muted/50 p-2">
+      <div className="flex items-center gap-2 px-1 pb-2"><span className={cn("h-2.5 w-2.5 rounded-full", bar)} /><span className="text-sm font-semibold">{title}</span><span className="num ml-auto rounded-sm border bg-card px-1.5 text-xs">{items.length}</span></div>
       <div className="flex flex-col gap-2">
         {items.map((d) => <div key={d.id}>{children(d)}</div>)}
         {items.length === 0 && <div className="rounded-md border border-dashed py-5 text-center text-xs text-muted-foreground">{empty}</div>}

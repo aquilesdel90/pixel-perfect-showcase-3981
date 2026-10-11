@@ -43,11 +43,11 @@ export function Pipeline() {
             const items = businesses.filter((b) => columnOf(b) === c.id);
             const revenue = items.reduce((s, b) => s + b.revenue, 0);
             return (
-              <div key={c.id} className="flex min-w-0 flex-col rounded-md bg-muted/50 p-2">
+              <div key={c.id} className="flex min-w-0 flex-col rounded-md border bg-muted/50 p-2">
                 <div className="px-1 pb-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold">{lang === "es" ? c.es : c.en}</span>
-                    <span className="num rounded-full bg-card px-2 text-xs">{items.length}</span>
+                    <span className="num rounded-sm border bg-card px-1.5 text-xs">{items.length}</span>
                   </div>
                   <div className="text-[11px] leading-tight text-muted-foreground">{lang === "es" ? c.hint : c.hintEn}</div>
                   {items.length > 0 && <div className="num mt-1 text-[11px] text-muted-foreground">{t("Facturación", "Revenue")}: {usd(revenue)}</div>}

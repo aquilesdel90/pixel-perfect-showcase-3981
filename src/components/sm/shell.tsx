@@ -90,19 +90,21 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const rail = (
     <nav className="flex h-full flex-col bg-rail text-rail-foreground">
-      <div className="flex h-14 items-center gap-2 border-b border-rail-active px-4">
-        <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-gold font-display text-xs font-bold text-gold-foreground">SM</div>
-        <div className="font-display text-sm font-semibold leading-tight">Strategic Mates<div className="text-[10px] font-medium tracking-[0.12em] text-gold uppercase">Platform</div></div>
+      {/* Official white wordmark on the navy rail, kept at the 41px minimum height and never stretched. */}
+      <div className="flex h-16 flex-col justify-center border-b border-rail-border px-3">
+        <img src="/brand/logo-horizontal-white.png" alt="Strategic Mates" width={213} height={41} className="h-[41px] w-auto max-w-none self-start object-contain" />
+        {/* Indented to line up with the start of the wordmark, not the castle. */}
+        <div className="mt-1 pl-[33px] font-display text-[9.5px] font-semibold uppercase leading-none tracking-[0.14em] text-rail-muted">Platform</div>
       </div>
       <div className="flex-1 space-y-0.5 p-2">
         {items.map((i) => (
           <Link key={i.to} to={i.to} activeOptions={{ exact: !!i.exact }} onClick={() => setOpen(false)}
-            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-rail-muted transition-colors hover:bg-rail-active hover:text-rail-foreground data-[status=active]:bg-rail-active data-[status=active]:text-rail-foreground data-[status=active]:shadow-[inset_3px_0_0_var(--color-gold)]">
-            <i.icon className="h-4 w-4" />{i[lang]}
+            className="group flex items-center gap-2.5 rounded-sm px-3 py-2 text-sm text-rail-muted transition-colors hover:bg-rail-active hover:text-rail-foreground data-[status=active]:bg-rail-active data-[status=active]:font-medium data-[status=active]:text-rail-foreground data-[status=active]:shadow-[inset_3px_0_0_var(--color-gold)]">
+            <i.icon className="h-4 w-4 group-data-[status=active]:text-gold" />{i[lang]}
           </Link>
         ))}
       </div>
-      <div className="border-t border-rail-active p-3 text-xs text-rail-muted">
+      <div className="border-t border-rail-border p-3 text-xs text-rail-muted">
         <div className="text-rail-foreground">{current.who}</div>
         <div>{role === "owner" ? (ownerIsFranchisor ? t("Small Business · Franquiciadora", "Small Business · Franchisor") : t("Small Business · En programa", "Small Business · In program")) : current[lang]}</div>
       </div>
@@ -111,19 +113,19 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="sticky top-0 hidden h-screen w-56 shrink-0 md:block">{rail}</aside>
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 md:block">{rail}</aside>
       {open && (
         <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-foreground/40" onClick={() => setOpen(false)} />
-          <div className="relative h-full w-60">{rail}</div>
+          <div className="absolute inset-0 bg-navy-deep/60" onClick={() => setOpen(false)} />
+          <div className="relative h-full w-64">{rail}</div>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-card px-4 shadow-[inset_0_-2px_0_var(--color-gold)]">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b bg-card px-4 shadow-[inset_0_-2px_0_var(--color-gold)]">
           <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
-          <h1 className="truncate font-display text-base font-semibold">{title}</h1>
+          <h1 className="truncate text-base font-semibold">{title}</h1>
           <div className="ml-auto flex items-center gap-2">
             <select aria-label={t("Rol", "Role")} value={currentKey} onChange={(e) => pick(e.target.value)}
               className="h-8 max-w-[260px] rounded-md border bg-card px-2 text-sm">
@@ -137,10 +139,30 @@ export function AppShell({ children }: { children: ReactNode }) {
             <button onClick={() => setDark(!dark)} aria-label="Theme" className="rounded-md border p-1.5 hover:bg-muted">
               {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
+            <BrandPattern />
           </div>
         </header>
         <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>
     </div>
+  );
+}
+
+// Brand chessboard motif: a small cluster of rounded squares in mid blue, used once, in the header corner.
+const PATTERN_SQUARES: { x: number; y: number; opacity: number }[] = [
+  { x: 20, y: 0, opacity: 0.7 },
+  { x: 10, y: 10, opacity: 0.3 },
+  { x: 30, y: 10, opacity: 0.3 },
+  { x: 20, y: 20, opacity: 0.7 },
+  { x: 30, y: 30, opacity: 0.3 },
+];
+
+function BrandPattern() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 40 40" className="ml-1 hidden h-9 w-9 shrink-0 sm:block">
+      {PATTERN_SQUARES.map((s) => (
+        <rect key={`${s.x}-${s.y}`} x={s.x} y={s.y} width="10" height="10" rx="2" fill="var(--color-navy-mid)" fillOpacity={s.opacity} />
+      ))}
+    </svg>
   );
 }
