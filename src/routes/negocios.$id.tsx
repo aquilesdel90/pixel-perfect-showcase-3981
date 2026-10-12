@@ -127,12 +127,12 @@ function Program() {
               {score.map((s) => <li key={s.es} className="text-xs"><div className="flex justify-between"><span>{lang === "es" ? s.es : s.en}</span><span className="num">{s.v}%</span></div><Bar value={s.v} className="mt-1" /></li>)}
             </ul>
           </Panel>
-          <Panel title={t("Entregables próximos y pendientes", "Upcoming & pending deliverables")} className="lg:col-span-2"><DeliverablesTable businessId={id} /></Panel>
+          <Panel title={t("Entregables próximos y pendientes", "Upcoming & pending deliverables")} className="lg:col-span-2"><DeliverablesTable businessId={id} openOnly /></Panel>
         </div>
       )}
       {tab === "areas" && !inProgram && <Empty />}
       {tab === "areas" && inProgram && !areaId && (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {b.areas!.map((a) => a.skipped ? <AreaCard key={a.area} a={a} /> : (
             <Link key={a.area} to="/negocios/$id" params={{ id }} search={{ tab: "areas", area: a.area }} className="block"><AreaCard a={a} clickable /></Link>
           ))}

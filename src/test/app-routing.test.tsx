@@ -13,6 +13,8 @@ const PAGES = [
   "/dueno", "/dueno/area/fin", "/dueno/franquicias", "/dueno/manual", "/dueno/documentos", "/dueno/numeros", "/dueno/negocio",
   "/bishop", "/bishop/oportunidades", "/bishop/oportunidades/vossler", "/bishop/acuerdos",
   "/franquicia", "/franquicia/manual", "/franquicia/pagos", "/franquicia/negocio",
+  "/tareas", "/red", "/red/tareas/vossler-B5-01",
+  "/firma", "/firma/clientes", "/firma/tareas/vossler-B5-01",
 ];
 
 describe("App routing", () => {

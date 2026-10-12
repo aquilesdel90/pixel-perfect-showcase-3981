@@ -1,19 +1,23 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3, Briefcase, Building2, CalendarDays, FileText, Filter, Home, Layers, Menu, Moon, Receipt, Settings,
-  Store, Sun, User, Users, BookOpen, Handshake, Wallet, X,
+  ListChecks, Network, Store, Sun, User, Users, BookOpen, Handshake, Wallet, X,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { ROLE_HOME, useApp, type Role } from "@/lib/app-state";
 import { getBusiness } from "@/lib/mock-data";
+import { getFirm } from "@/lib/tasks";
+import { areaLabel } from "./tasks";
 import { cn } from "@/lib/utils";
 
 type NavItem = { to: string; es: string; en: string; icon: typeof Home; exact?: boolean };
 
 const NAV: Record<Role, NavItem[]> = {
   sm: [
+    { to: "/tareas", es: "Mis tareas", en: "My tasks", icon: ListChecks },
     { to: "/", es: "Embudo", en: "Funnel", icon: Filter, exact: true },
     { to: "/negocios", es: "Negocios", en: "Businesses", icon: Building2 },
+    { to: "/red", es: "Tareas de la red", en: "Network tasks", icon: Network },
     { to: "/franquicias", es: "Franquicias", en: "Franchises", icon: Store },
     { to: "/calendario", es: "Calendario", en: "Calendar", icon: CalendarDays },
     { to: "/catalogo", es: "Catálogo y equipo", en: "Catalog & team", icon: Layers },
@@ -39,21 +43,33 @@ const NAV: Record<Role, NavItem[]> = {
     { to: "/franquicia/pagos", es: "Pagos", en: "Payments", icon: Receipt },
     { to: "/franquicia/negocio", es: "Mi franquicia", en: "My franchise", icon: Wallet },
   ],
+  // Partner firm: only its own tasks and clients. No business numbers, manual or documents.
+  partner: [
+    { to: "/firma", es: "Mis tareas", en: "My tasks", icon: ListChecks, exact: true },
+    { to: "/firma/clientes", es: "Mis clientes", en: "My clients", icon: Briefcase },
+    { to: "/calendario", es: "Calendario", en: "Calendar", icon: CalendarDays },
+    { to: "/perfil", es: "Mi perfil", en: "My profile", icon: User },
+  ],
 };
 
 const EXTRA_TITLES: { prefix: string; es: string; en: string }[] = [
   { prefix: "/negocios/", es: "Programa", en: "Program" },
   { prefix: "/franquicias/", es: "Detalle de franquicia", en: "Franchise detail" },
   { prefix: "/bishop/oportunidades/", es: "Ficha de oportunidad", en: "Opportunity sheet" },
+  { prefix: "/red/tareas/", es: "Detalle de tarea", en: "Task detail" },
+  { prefix: "/firma/tareas/", es: "Detalle de tarea", en: "Task detail" },
 ];
 
 // The owner role has two sample users: a small business in the program and one that already franchised.
-const ROLES: { key: string; id: Role; biz?: string; es: string; en: string; who: string }[] = [
+// The partner role has two sample firms: a marketing agency and a law firm.
+const ROLES: { key: string; id: Role; biz?: string; firm?: string; es: string; en: string; who: string }[] = [
   { key: "sm", id: "sm", es: "Equipo SM", en: "SM team", who: "Marylin Boraei" },
   { key: "owner:vossler", id: "owner", biz: "vossler", es: "Small Business · Vossler (en programa)", en: "Small Business · Vossler (in program)", who: "Daniel Vossler · Vossler" },
   { key: "owner:bimbo", id: "owner", biz: "bimbo", es: "Small Business · Bimbo Tacos (franquiciadora)", en: "Small Business · Bimbo Tacos (franchisor)", who: "Rodrigo Bimbo · Bimbo Tacos" },
   { key: "bishop", id: "bishop", es: "Business Bishop", en: "Business Bishop", who: "Jefferson Paula" },
   { key: "franchise", id: "franchise", es: "Franquiciado", en: "Franchise owner", who: "Luisa Paredes · Bimbo Orlando Sur" },
+  { key: "partner:xyz", id: "partner", firm: "xyz", es: "Firma aliada · Agencia XYZ (Marketing)", en: "Partner firm · Agencia XYZ (Marketing)", who: "Valeria Soto · Agencia XYZ" },
+  { key: "partner:perez", id: "partner", firm: "perez", es: "Firma aliada · Estudio Pérez Legal (Legal)", en: "Partner firm · Estudio Pérez Legal (Legal)", who: "Julián Pérez · Estudio Pérez Legal" },
 ];
 
 // A franchisor's menu replaces "Mi programa" with the franchisor home and adds its franchises.
@@ -68,7 +84,7 @@ const FRANCHISOR_NAV: NavItem[] = [
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { role, setRole, lang, setLang, dark, setDark, t, ownerBusiness, setOwnerBusiness } = useApp();
+  const { role, setRole, lang, setLang, dark, setDark, t, ownerBusiness, setOwnerBusiness, partnerFirm, setPartnerFirm } = useApp();
   const navigate = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
@@ -78,13 +94,17 @@ export function AppShell({ children }: { children: ReactNode }) {
   const extra = EXTRA_TITLES.find((e) => path.startsWith(e.prefix));
   const match = [...items].sort((a, b) => b.to.length - a.to.length).find((i) => (i.exact ? path === i.to : path.startsWith(i.to)));
   const title = extra ? extra[lang] : match ? match[lang] : "SM Platform";
-  const currentKey = role === "owner" ? `owner:${ownerBusiness}` : role;
+  const currentKey = role === "owner" ? `owner:${ownerBusiness}` : role === "partner" ? `partner:${partnerFirm}` : role;
   const current = ROLES.find((r) => r.key === currentKey) ?? ROLES[0]!;
+  const firm = role === "partner" ? getFirm(partnerFirm) : undefined;
+  // "Firma aliada · <type>": the firm type is the program area it works on.
+  const partnerLabel = firm ? `${t("Firma aliada", "Partner firm")} · ${areaLabel(firm.area, lang)}` : undefined;
   const pick = (key: string) => {
     const r = ROLES.find((x) => x.key === key);
     if (!r) return;
     setRole(r.id);
     if (r.biz) setOwnerBusiness(r.biz);
+    if (r.firm) setPartnerFirm(r.firm);
     navigate({ to: ROLE_HOME[r.id] });
   };
 
@@ -106,7 +126,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <div className="border-t border-rail-border p-3 text-xs text-rail-muted">
         <div className="text-rail-foreground">{current.who}</div>
-        <div>{role === "owner" ? (ownerIsFranchisor ? t("Small Business · Franquiciadora", "Small Business · Franchisor") : t("Small Business · En programa", "Small Business · In program")) : current[lang]}</div>
+        <div>{role === "owner" ? (ownerIsFranchisor ? t("Small Business · Franquiciadora", "Small Business · Franchisor") : t("Small Business · En programa", "Small Business · In program")) : partnerLabel ?? current[lang]}</div>
       </div>
     </nav>
   );
@@ -126,6 +146,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
           <h1 className="truncate text-base font-semibold">{title}</h1>
+          {partnerLabel && <span className="hidden whitespace-nowrap rounded-sm border border-navy-mid bg-secondary px-2 py-0.5 font-display text-[11.5px] font-semibold text-primary lg:inline dark:text-foreground">{partnerLabel}</span>}
           <div className="ml-auto flex items-center gap-2">
             <select aria-label={t("Rol", "Role")} value={currentKey} onChange={(e) => pick(e.target.value)}
               className="h-8 max-w-[260px] rounded-md border bg-card px-2 text-sm">

@@ -156,41 +156,18 @@ export type ProgramArea = AreaId | "diag" | "cierre";
 export interface Deliverable {
   id: string; business: string; area: ProgramArea; name: string; responsible: string;
   start: string; due: string; status: DelivStatus; attachments: number;
-  description?: string;
-  review?: "pending" | "accepted" | "rework"; // only for delivered items: the owner's verdict
-  reviewNote?: string;
+  description?: string | undefined;
 }
 
+// Gate deliverables only (diagnosis and franchisable close), which SM runs itself.
+// Work inside the six program areas lives in src/lib/tasks.ts, generated from the Método 180 catalog.
 export const deliverables: Deliverable[] = [
   { id: "d1", business: "vossler", area: "diag", name: "Informe de diagnóstico", responsible: "Nicolás García", start: "2026-07-28", due: "2026-08-11", status: "delivered", attachments: 2 },
   { id: "d2", business: "vossler", area: "diag", name: "Cuenta de Google Workspace", responsible: "Aquiles Benítez", start: "2026-07-28", due: "2026-08-04", status: "delivered", attachments: 0 },
-  { id: "d3", business: "vossler", area: "fin", name: "Separación de cuentas y QuickBooks", responsible: "Marylin Boraei", start: "2026-08-12", due: "2026-09-15", status: "delivered", attachments: 3, review: "accepted", description: "Cuenta bancaria del negocio separada de la personal, QuickBooks conectado y plan de cuentas cargado." },
-  { id: "d22", business: "vossler", area: "fin", name: "Plantilla de flujo de caja mensual", responsible: "Marylin Boraei", start: "2026-09-01", due: "2026-09-25", status: "delivered", attachments: 1, review: "rework", reviewNote: "Faltan los pagos a subcontratistas, no cierra con el banco. Agregar la fila y volver a mandar.", description: "Planilla que el dueño actualiza cada semana con cobros, pagos y saldo proyectado." },
-  { id: "d4", business: "vossler", area: "fin", name: "Estados financieros verificados", responsible: "Marylin Boraei", start: "2026-09-01", due: "2026-10-20", status: "progress", attachments: 1, description: "P&L, balance y flujo de los últimos 12 meses cruzados con el banco." },
-  { id: "d5", business: "vossler", area: "fin", name: "Estados de cuenta agosto", responsible: "Daniel Vossler", start: "2026-09-20", due: "2026-10-05", status: "owner", attachments: 0, description: "Extractos bancarios de agosto de las dos cuentas." },
-  { id: "d23", business: "vossler", area: "fin", name: "Presupuesto 2027", responsible: "Marylin Boraei", start: "2026-11-10", due: "2026-12-05", status: "planned", attachments: 0 },
-  { id: "d6", business: "vossler", area: "proc", name: "Mapa de procesos: ventas", responsible: "Nicolás García", start: "2026-08-12", due: "2026-09-10", status: "delivered", attachments: 1, review: "accepted", description: "Desde el primer contacto hasta la firma del presupuesto, con responsables y formatos." },
-  { id: "d7", business: "vossler", area: "proc", name: "Mapa de procesos: obra", responsible: "Nicolás García", start: "2026-09-05", due: "2026-10-02", status: "overdue", attachments: 1, description: "Desde la firma hasta la entrega de la obra: compras, cuadrillas, control de calidad." },
-  { id: "d24", business: "vossler", area: "proc", name: "Checklist de calidad por obra", responsible: "Daniel Vossler", start: "2026-10-06", due: "2026-10-12", status: "owner", attachments: 0, description: "El dueño marca qué controles hace hoy en cada obra para que SM los formalice." },
-  { id: "d8", business: "vossler", area: "proc", name: "Procedimiento de compras", responsible: "Nicolás García", start: "2026-10-01", due: "2026-11-05", status: "planned", attachments: 0 },
-  { id: "d9", business: "vossler", area: "marca", name: "Auditoría de marca", responsible: "Marylin Boraei", start: "2026-08-15", due: "2026-09-20", status: "delivered", attachments: 2, review: "pending", description: "Qué transmite la marca hoy, si es registrable y qué habría que cambiar." },
-  { id: "d10", business: "vossler", area: "marca", name: "Propuesta de identidad visual", responsible: "Marylin Boraei", start: "2026-09-21", due: "2026-10-15", status: "progress", attachments: 3 },
-  { id: "d26", business: "vossler", area: "marca", name: "Decisión sobre el nombre de la marca", responsible: "Daniel Vossler", start: "2026-10-09", due: "2026-10-22", status: "owner", attachments: 0, description: "El nombre actual no es registrable tal como está. El dueño decide si lo cambia o lo adapta." },
-  { id: "d11", business: "vossler", area: "legal", name: "Estructura LLC y operating agreement", responsible: "Aquiles Benítez", start: "2026-08-12", due: "2026-09-12", status: "delivered", attachments: 2, review: "accepted" },
-  { id: "d12", business: "vossler", area: "legal", name: "Registro de marca (USPTO)", responsible: "Aquiles Benítez", start: "2026-09-15", due: "2026-11-30", status: "progress", attachments: 1 },
-  { id: "d25", business: "vossler", area: "legal", name: "Organigrama con alternos", responsible: "Marylin Boraei", start: "2026-10-20", due: "2026-11-20", status: "planned", attachments: 0 },
-  { id: "d27", business: "vossler", area: "tec", name: "Inventario de sistemas y accesos", responsible: "Aquiles Benítez", start: "2026-09-15", due: "2026-10-05", status: "delivered", attachments: 1, review: "accepted", description: "Qué programas usa el negocio, quién tiene acceso a qué y qué se paga por mes." },
-  { id: "d28", business: "vossler", area: "tec", name: "Lista de programas y suscripciones", responsible: "Daniel Vossler", start: "2026-10-06", due: "2026-10-14", status: "owner", attachments: 0, description: "El dueño confirma la lista y agrega lo que falte (planillas, WhatsApp, apps de obra)." },
-  { id: "d29", business: "vossler", area: "tec", name: "CRM y cotizador conectados a QuickBooks", responsible: "Aquiles Benítez", start: "2026-10-15", due: "2026-11-15", status: "planned", attachments: 0, description: "Un solo flujo: presupuesto, obra, factura. Sin volver a cargar datos." },
-  { id: "d30", business: "vossler", area: "tec", name: "Respaldos automáticos y accesos por rol", responsible: "Aquiles Benítez", start: "2026-11-10", due: "2026-12-10", status: "planned", attachments: 0 },
   { id: "d13", business: "vossler", area: "cierre", name: "Manual de operaciones v1", responsible: "Nicolás García", start: "2027-01-08", due: "2027-02-05", status: "planned", attachments: 0 },
-  { id: "d14", business: "prime10", area: "fin", name: "Separación de cuentas y QuickBooks", responsible: "Marylin Boraei", start: "2026-09-23", due: "2026-10-25", status: "progress", attachments: 0 },
-  { id: "d15", business: "prime10", area: "legal", name: "Licencia de contratista", responsible: "Carla Méndez", start: "2026-09-23", due: "2026-10-06", status: "overdue", attachments: 0 },
   { id: "d16", business: "enyermy", area: "diag", name: "Informe de diagnóstico", responsible: "Marylin Boraei", start: "2026-10-04", due: "2026-10-18", status: "progress", attachments: 0 },
   { id: "d17", business: "enyermy", area: "diag", name: "Cuenta de Google Workspace", responsible: "Aquiles Benítez", start: "2026-10-04", due: "2026-10-09", status: "progress", attachments: 0 },
   { id: "d18", business: "prime10", area: "diag", name: "Informe de diagnóstico", responsible: "Nicolás García", start: "2026-09-09", due: "2026-09-23", status: "delivered", attachments: 1 },
-  { id: "d19", business: "prime10", area: "proc", name: "Entrevistas con jefes de cuadrilla", responsible: "Nicolás García", start: "2026-10-01", due: "2026-10-20", status: "progress", attachments: 0 },
-  { id: "d20", business: "prime10", area: "marca", name: "Cuestionario de marca", responsible: "Carla Méndez", start: "2026-09-25", due: "2026-10-12", status: "owner", attachments: 0 },
   { id: "d21", business: "enyermy", area: "diag", name: "Plan del programa y MOU", responsible: "Marylin Boraei", start: "2026-10-10", due: "2026-10-18", status: "planned", attachments: 0 },
 ];
 

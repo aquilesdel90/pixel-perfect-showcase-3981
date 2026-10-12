@@ -5,9 +5,11 @@ import { useApp } from "@/lib/app-state";
 import { Pipeline } from "@/components/sm/pipeline";
 import { cn } from "@/lib/utils";
 import { pageHead } from "@/lib/head";
-import { businesses, deliverables, events, franchises, getBusiness, WEEK, WEEK_EN } from "@/lib/mock-data";
+import { businesses, events, franchises, getBusiness, WEEK, WEEK_EN } from "@/lib/mock-data";
+import { useTasks } from "@/lib/task-store";
+import { getFirm, isOverdue, lateDays } from "@/lib/tasks";
 import { Bar, Panel, Pill, Table } from "@/components/sm/ui";
-import { DelivPill } from "@/components/sm/status";
+import { TaskStatusPill } from "@/components/sm/tasks";
 import { FRANCHISABILITY_THRESHOLD } from "@/lib/config";
 
 export const Route = createFileRoute("/")({
@@ -26,7 +28,9 @@ function Funnel() {
     { label: t("Franquiciadoras", "Franchisors"), n: count("franchisor") },
     { label: t("Franquicias", "Franchises"), n: franchises.length },
   ];
-  const attention = deliverables.filter((d) => d.status === "overdue" || d.status === "owner");
+  // Most overdue program tasks across the network; the full list lives in "Tareas de la red".
+  const { tasks } = useTasks();
+  const attention = tasks.filter(isOverdue).sort((a, z) => lateDays(z) - lateDays(a)).slice(0, 8);
   const inProgram = businesses.filter((b) => b.stage === "program");
   const week = lang === "es" ? WEEK : WEEK_EN;
   const [view, setView] = useState<"resumen" | "tablero">("resumen");
@@ -67,16 +71,17 @@ function Funnel() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={<span className="inline-flex items-center gap-1.5"><AlertTriangle className="h-4 w-4 text-warning" />{t("Necesita atención", "Needs attention")}</span>}>
+        <Panel title={<span className="inline-flex items-center gap-1.5"><AlertTriangle className="h-4 w-4 text-warning" />{t("Necesita atención", "Needs attention")}</span>}
+          action={<Link to="/red" className="text-xs text-primary hover:underline">{t("Tareas de la red", "Network tasks")}</Link>}>
           <ul className="divide-y">
             {attention.map((d) => (
               <li key={d.id}>
-                <Link to="/negocios/$id" params={{ id: d.business }} search={{ tab: "plan" }} className="flex items-center justify-between gap-2 py-2 hover:text-primary">
+                <Link to="/red/tareas/$id" params={{ id: d.id }} className="flex items-center justify-between gap-2 py-2 hover:text-primary">
                   <div>
-                    <div className="text-sm font-medium">{d.name}</div>
-                    <div className="text-xs text-muted-foreground">{getBusiness(d.business)?.name} · {d.responsible}</div>
+                    <div className="text-sm font-medium"><span className="font-display text-xs text-muted-foreground">{d.code}</span> {d.name}</div>
+                    <div className="text-xs text-muted-foreground">{getBusiness(d.business)?.name} · {getFirm(d.firm)?.name ?? "—"} · <span className="text-danger">{t(`${lateDays(d)} d de atraso`, `${lateDays(d)} d late`)}</span></div>
                   </div>
-                  <DelivPill status={d.status} />
+                  <TaskStatusPill task={d} />
                 </Link>
               </li>
             ))}

@@ -1,11 +1,15 @@
+import { Link } from "@tanstack/react-router";
 import { CheckCircle2, FileSignature, Paperclip, Upload, Workflow } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/app-state";
 import { PROGRAM } from "@/lib/config";
 import { fdate, usd } from "@/lib/format";
-import { contracts, deliverables, documents, financials, getBusiness, manualSections, programStart } from "@/lib/mock-data";
+import { contracts, deliverables, documents, financials, getBusiness, manualSections, programStart, type Deliverable, type DelivStatus } from "@/lib/mock-data";
+import { useTasks } from "@/lib/task-store";
+import { isOpen, shownStatus, type Task, type TaskStatus } from "@/lib/tasks";
 import { cn } from "@/lib/utils";
 import { DelivPill, DocPill } from "./status";
+import { DueText, FirmPill, TaskStatusPill } from "./tasks";
 import { Bar, Bars, Btn, Panel, Pill, Stat, Table } from "./ui";
 
 export function areaName(id: string, lang: "es" | "en") {
@@ -14,20 +18,34 @@ export function areaName(id: string, lang: "es" | "en") {
   return PROGRAM.areas.find((a) => a.id === id)?.[lang] ?? id;
 }
 
-export function DeliverablesTable({ businessId, onlyOwner }: { businessId: string; onlyOwner?: boolean }) {
+// One row of the program plan: a gate deliverable SM runs (diagnosis, close) or a catalog task of an area.
+type PlanRow = { id: string; code?: string | undefined; name: string; area: string; firm?: string | null | undefined; responsible: string; start: string; due: string; attachments: number; task?: Task | undefined; deliv?: Deliverable | undefined };
+
+// Gate deliverables come from mock-data; area work comes from the task store (single source of truth).
+function usePlanRows(businessId: string, openOnly?: boolean | undefined): PlanRow[] {
+  const { tasks } = useTasks();
+  const gates: PlanRow[] = deliverables.filter((d) => d.business === businessId && (!openOnly || d.status !== "delivered"))
+    .map((d) => ({ id: d.id, name: d.name, area: d.area, responsible: d.responsible, start: d.start, due: d.due, attachments: d.attachments, deliv: d }));
+  const work: PlanRow[] = tasks.filter((x) => x.business === businessId && (!openOnly || isOpen(x)))
+    .map((x) => ({ id: x.id, code: x.code, name: x.name, area: x.area, firm: x.firm, responsible: x.responsible, start: x.start, due: x.due, attachments: x.attachments.length, task: x }));
+  const order = (r: PlanRow) => (r.area === "diag" ? 0 : r.area === "cierre" ? 2 : 1);
+  return [...gates, ...work].sort((a, z) => order(a) - order(z) || a.due.localeCompare(z.due));
+}
+
+export function DeliverablesTable({ businessId, openOnly }: { businessId: string; openOnly?: boolean | undefined }) {
   const { t, lang } = useApp();
-  const owner = getBusiness(businessId)?.owner;
-  const rows = deliverables.filter((d) => d.business === businessId && (!onlyOwner || d.status === "owner" || d.responsible === owner));
+  const rows = usePlanRows(businessId, openOnly);
   return (
-    <Table head={[t("Entregable", "Deliverable"), t("Área", "Area"), t("Responsable", "Responsible"), t("Inicio", "Start"), t("Vence", "Due"), t("Estado", "Status"), ""]}>
+    <Table head={[t("Código", "Code"), t("Entregable", "Deliverable"), t("Área", "Area"), t("Ejecuta", "Executed by"), t("Responsable", "Responsible"), t("Vence", "Due"), t("Estado", "Status"), ""]}>
       {rows.map((d) => (
         <tr key={d.id}>
-          <td className="font-medium">{d.name}</td>
-          <td>{areaName(d.area, lang)}</td>
-          <td>{d.responsible}</td>
-          <td>{fdate(d.start, lang)}</td>
-          <td>{fdate(d.due, lang)}</td>
-          <td><DelivPill status={d.status} /></td>
+          <td className="whitespace-nowrap font-display text-xs font-semibold">{d.code ?? "—"}</td>
+          <td className="font-medium">{d.task ? <Link to="/red/tareas/$id" params={{ id: d.task.id }} className="hover:text-primary hover:underline">{d.name}</Link> : d.name}</td>
+          <td className="whitespace-nowrap">{areaName(d.area, lang)}</td>
+          <td>{d.task ? <FirmPill firmId={d.task.firm} /> : <Pill tone="grey" fit dot={false}>SM</Pill>}</td>
+          <td className="whitespace-nowrap">{d.responsible}</td>
+          <td>{d.task ? <DueText task={d.task} /> : fdate(d.due, lang)}</td>
+          <td>{d.task ? <TaskStatusPill task={d.task} /> : d.deliv && <DelivPill status={d.deliv.status} />}</td>
           <td className="text-muted-foreground">{d.attachments > 0 && <span className="inline-flex items-center gap-1 text-xs"><Paperclip className="h-3 w-3" />{d.attachments}</span>}</td>
         </tr>
       ))}
@@ -35,15 +53,22 @@ export function DeliverablesTable({ businessId, onlyOwner }: { businessId: strin
   );
 }
 
+// Bar color per state, for gate deliverables and for tasks.
+const DELIV_COLOR: Record<DelivStatus, string> = { planned: "bg-muted-foreground/40", progress: "bg-primary", delivered: "bg-success", overdue: "bg-danger", owner: "bg-warning" };
+const TASK_COLOR: Record<TaskStatus, string> = {
+  planned: "bg-muted-foreground/40", progress: "bg-primary", delivered: "bg-warning", redelivered: "bg-warning", changes: "bg-danger/70",
+  accepted: "bg-success", overdue: "bg-danger", third: "border border-dashed border-gold-dark bg-gold-light/40",
+};
+
 export function Gantt({ businessId }: { businessId: string }) {
   const { lang, t } = useApp();
   const startDate = programStart[businessId] ?? "2026-07-27";
   const today = getBusiness(businessId)?.day ?? 0;
   const s0 = new Date(startDate).getTime();
   const dayOf = (iso: string) => Math.round((new Date(iso).getTime() - s0) / 864e5) + 1;
-  const rows = deliverables.filter((d) => d.business === businessId);
+  const rows = usePlanRows(businessId);
   const pct = (d: number) => `${(Math.max(0, Math.min(180, d)) / 180) * 100}%`;
-  const color = { planned: "bg-muted-foreground/40", progress: "bg-primary", delivered: "bg-success", overdue: "bg-danger", owner: "bg-warning" };
+  const barColor = (r: PlanRow) => (r.task ? TASK_COLOR[shownStatus(r.task)] : r.deliv ? DELIV_COLOR[r.deliv.status] : "bg-muted");
   return (
     <div className="overflow-x-auto">
       <div className="min-w-[720px]">
@@ -61,9 +86,9 @@ export function Gantt({ businessId }: { businessId: string }) {
             const a = dayOf(d.start), b = dayOf(d.due);
             return (
               <div key={d.id} className="flex h-8 items-center border-b border-border/50">
-                <div className="w-56 shrink-0 truncate pr-2 text-xs"><span className="text-muted-foreground">{areaName(d.area, lang)} · </span>{d.name}</div>
+                <div className="w-56 shrink-0 truncate pr-2 text-xs" title={d.name}><span className="text-muted-foreground">{d.code ?? areaName(d.area, lang)} · </span>{d.name}</div>
                 <div className="relative h-full flex-1">
-                  <div className={cn("absolute top-2 h-4 rounded", color[d.status])} style={{ left: pct(a), width: `calc(${pct(b)} - ${pct(a)})` }} />
+                  <div className={cn("absolute top-2 h-4 rounded-sm", barColor(d))} style={{ left: pct(a), width: `calc(${pct(b)} - ${pct(a)})` }} />
                 </div>
               </div>
             );

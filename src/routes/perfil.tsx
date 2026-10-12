@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useApp } from "@/lib/app-state";
 import { pageHead } from "@/lib/head";
+import { getFirm } from "@/lib/tasks";
 import { Btn, Panel, Pill } from "@/components/sm/ui";
 import { NotifPrefs } from "./configuracion";
 
@@ -10,13 +11,18 @@ export const Route = createFileRoute("/perfil")({
 });
 
 function Profile() {
-  const { t } = useApp();
+  const { t, role, partnerFirm } = useApp();
+  // A partner firm sees its own contact person; everyone else sees the SM director used across the prototype.
+  const firm = role === "partner" ? getFirm(partnerFirm) : undefined;
+  const fields = firm
+    ? [[t("Nombre", "Name"), firm.contact], ["Email", firm.email], [t("Firma", "Firm"), firm.name], [t("Teléfono", "Phone"), "+1 (305) 555-0188"]]
+    : [[t("Nombre", "Name"), "Marylin Boraei"], ["Email", "marylin@strategicmates.com"], [t("Puesto", "Position"), t("Directora", "Director")], [t("Teléfono", "Phone"), "+1 (407) 555-0142"]];
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <Panel title={t("Datos", "Details")}>
         <div className="grid gap-3 text-sm">
-          {[[t("Nombre", "Name"), "Marylin Boraei"], ["Email", "marylin@strategicmates.com"], [t("Puesto", "Position"), t("Directora", "Director")], [t("Teléfono", "Phone"), "+1 (407) 555-0142"]].map(([k, v]) => (
-            <label key={k} className="grid gap-1"><span className="text-xs text-muted-foreground">{k}</span><input defaultValue={v} className="h-8 rounded-md border bg-background px-2" /></label>
+          {fields.map(([k, v]) => (
+            <label key={`${firm?.id ?? "sm"}-${k}`} className="grid gap-1"><span className="text-xs text-muted-foreground">{k}</span><input defaultValue={v} className="h-8 rounded-md border bg-background px-2" /></label>
           ))}
           <div><Btn>{t("Guardar", "Save")}</Btn></div>
         </div>

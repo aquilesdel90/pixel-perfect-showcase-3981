@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppProvider } from "@/lib/app-state";
+import { TaskProvider } from "@/lib/task-store";
 import { AppShell } from "@/components/sm/shell";
 
 function NotFoundComponent() {
@@ -105,10 +106,12 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
-        <AppShell>
-          <Outlet />
-        </AppShell>
-        <Toaster position="bottom-right" richColors closeButton />
+        <TaskProvider>
+          <AppShell>
+            <Outlet />
+          </AppShell>
+          <Toaster position="bottom-right" richColors closeButton />
+        </TaskProvider>
       </AppProvider>
     </QueryClientProvider>
   );

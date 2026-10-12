@@ -14,6 +14,7 @@ import { Route as CalendarioRouteImport } from './routes/calendario'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as TareasRouteImport } from './routes/tareas'
 import { Route as BishopIndexRouteImport } from './routes/bishop.index'
 import { Route as BishopAcuerdosRouteImport } from './routes/bishop.acuerdos'
 import { Route as DuenoIndexRouteImport } from './routes/dueno.index'
@@ -22,6 +23,8 @@ import { Route as DuenoFranquiciasRouteImport } from './routes/dueno.franquicias
 import { Route as DuenoManualRouteImport } from './routes/dueno.manual'
 import { Route as DuenoNegocioRouteImport } from './routes/dueno.negocio'
 import { Route as DuenoNumerosRouteImport } from './routes/dueno.numeros'
+import { Route as FirmaIndexRouteImport } from './routes/firma.index'
+import { Route as FirmaClientesRouteImport } from './routes/firma.clientes'
 import { Route as FranquiciaIndexRouteImport } from './routes/franquicia.index'
 import { Route as FranquiciaManualRouteImport } from './routes/franquicia.manual'
 import { Route as FranquiciaNegocioRouteImport } from './routes/franquicia.negocio'
@@ -30,9 +33,12 @@ import { Route as FranquiciasIndexRouteImport } from './routes/franquicias.index
 import { Route as FranquiciasIdRouteImport } from './routes/franquicias.$id'
 import { Route as NegociosIndexRouteImport } from './routes/negocios.index'
 import { Route as NegociosIdRouteImport } from './routes/negocios.$id'
+import { Route as RedIndexRouteImport } from './routes/red.index'
 import { Route as BishopOportunidadesIndexRouteImport } from './routes/bishop.oportunidades.index'
 import { Route as BishopOportunidadesIdRouteImport } from './routes/bishop.oportunidades.$id'
 import { Route as DuenoAreaAreaRouteImport } from './routes/dueno.area.$area'
+import { Route as FirmaTareasIdRouteImport } from './routes/firma.tareas.$id'
+import { Route as RedTareasIdRouteImport } from './routes/red.tareas.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -57,6 +63,11 @@ const ConfiguracionRoute = ConfiguracionRouteImport.update({
 const PerfilRoute = PerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TareasRoute = TareasRouteImport.update({
+  id: '/tareas',
+  path: '/tareas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BishopIndexRoute = BishopIndexRouteImport.update({
@@ -99,6 +110,16 @@ const DuenoNumerosRoute = DuenoNumerosRouteImport.update({
   path: '/dueno/numeros',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FirmaIndexRoute = FirmaIndexRouteImport.update({
+  id: '/firma/',
+  path: '/firma/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FirmaClientesRoute = FirmaClientesRouteImport.update({
+  id: '/firma/clientes',
+  path: '/firma/clientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FranquiciaIndexRoute = FranquiciaIndexRouteImport.update({
   id: '/franquicia/',
   path: '/franquicia/',
@@ -139,6 +160,11 @@ const NegociosIdRoute = NegociosIdRouteImport.update({
   path: '/negocios/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedIndexRoute = RedIndexRouteImport.update({
+  id: '/red/',
+  path: '/red/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BishopOportunidadesIndexRoute =
   BishopOportunidadesIndexRouteImport.update({
     id: '/bishop/oportunidades/',
@@ -155,6 +181,16 @@ const DuenoAreaAreaRoute = DuenoAreaAreaRouteImport.update({
   path: '/dueno/area/$area',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FirmaTareasIdRoute = FirmaTareasIdRouteImport.update({
+  id: '/firma/tareas/$id',
+  path: '/firma/tareas/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedTareasIdRoute = RedTareasIdRouteImport.update({
+  id: '/red/tareas/$id',
+  path: '/red/tareas/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -162,12 +198,14 @@ export interface FileRoutesByFullPath {
   '/catalogo': typeof CatalogoRoute
   '/configuracion': typeof ConfiguracionRoute
   '/perfil': typeof PerfilRoute
+  '/tareas': typeof TareasRoute
   '/bishop/acuerdos': typeof BishopAcuerdosRoute
   '/dueno/documentos': typeof DuenoDocumentosRoute
   '/dueno/franquicias': typeof DuenoFranquiciasRoute
   '/dueno/manual': typeof DuenoManualRoute
   '/dueno/negocio': typeof DuenoNegocioRoute
   '/dueno/numeros': typeof DuenoNumerosRoute
+  '/firma/clientes': typeof FirmaClientesRoute
   '/franquicia/manual': typeof FranquiciaManualRoute
   '/franquicia/negocio': typeof FranquiciaNegocioRoute
   '/franquicia/pagos': typeof FranquiciaPagosRoute
@@ -175,11 +213,15 @@ export interface FileRoutesByFullPath {
   '/negocios/$id': typeof NegociosIdRoute
   '/bishop/': typeof BishopIndexRoute
   '/dueno/': typeof DuenoIndexRoute
+  '/firma/': typeof FirmaIndexRoute
   '/franquicia/': typeof FranquiciaIndexRoute
   '/franquicias/': typeof FranquiciasIndexRoute
   '/negocios/': typeof NegociosIndexRoute
+  '/red/': typeof RedIndexRoute
   '/bishop/oportunidades/$id': typeof BishopOportunidadesIdRoute
   '/dueno/area/$area': typeof DuenoAreaAreaRoute
+  '/firma/tareas/$id': typeof FirmaTareasIdRoute
+  '/red/tareas/$id': typeof RedTareasIdRoute
   '/bishop/oportunidades/': typeof BishopOportunidadesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -188,12 +230,14 @@ export interface FileRoutesByTo {
   '/catalogo': typeof CatalogoRoute
   '/configuracion': typeof ConfiguracionRoute
   '/perfil': typeof PerfilRoute
+  '/tareas': typeof TareasRoute
   '/bishop/acuerdos': typeof BishopAcuerdosRoute
   '/dueno/documentos': typeof DuenoDocumentosRoute
   '/dueno/franquicias': typeof DuenoFranquiciasRoute
   '/dueno/manual': typeof DuenoManualRoute
   '/dueno/negocio': typeof DuenoNegocioRoute
   '/dueno/numeros': typeof DuenoNumerosRoute
+  '/firma/clientes': typeof FirmaClientesRoute
   '/franquicia/manual': typeof FranquiciaManualRoute
   '/franquicia/negocio': typeof FranquiciaNegocioRoute
   '/franquicia/pagos': typeof FranquiciaPagosRoute
@@ -201,11 +245,15 @@ export interface FileRoutesByTo {
   '/negocios/$id': typeof NegociosIdRoute
   '/bishop': typeof BishopIndexRoute
   '/dueno': typeof DuenoIndexRoute
+  '/firma': typeof FirmaIndexRoute
   '/franquicia': typeof FranquiciaIndexRoute
   '/franquicias': typeof FranquiciasIndexRoute
   '/negocios': typeof NegociosIndexRoute
+  '/red': typeof RedIndexRoute
   '/bishop/oportunidades/$id': typeof BishopOportunidadesIdRoute
   '/dueno/area/$area': typeof DuenoAreaAreaRoute
+  '/firma/tareas/$id': typeof FirmaTareasIdRoute
+  '/red/tareas/$id': typeof RedTareasIdRoute
   '/bishop/oportunidades': typeof BishopOportunidadesIndexRoute
 }
 export interface FileRoutesById {
@@ -215,12 +263,14 @@ export interface FileRoutesById {
   '/catalogo': typeof CatalogoRoute
   '/configuracion': typeof ConfiguracionRoute
   '/perfil': typeof PerfilRoute
+  '/tareas': typeof TareasRoute
   '/bishop/acuerdos': typeof BishopAcuerdosRoute
   '/dueno/documentos': typeof DuenoDocumentosRoute
   '/dueno/franquicias': typeof DuenoFranquiciasRoute
   '/dueno/manual': typeof DuenoManualRoute
   '/dueno/negocio': typeof DuenoNegocioRoute
   '/dueno/numeros': typeof DuenoNumerosRoute
+  '/firma/clientes': typeof FirmaClientesRoute
   '/franquicia/manual': typeof FranquiciaManualRoute
   '/franquicia/negocio': typeof FranquiciaNegocioRoute
   '/franquicia/pagos': typeof FranquiciaPagosRoute
@@ -228,11 +278,15 @@ export interface FileRoutesById {
   '/negocios/$id': typeof NegociosIdRoute
   '/bishop/': typeof BishopIndexRoute
   '/dueno/': typeof DuenoIndexRoute
+  '/firma/': typeof FirmaIndexRoute
   '/franquicia/': typeof FranquiciaIndexRoute
   '/franquicias/': typeof FranquiciasIndexRoute
   '/negocios/': typeof NegociosIndexRoute
+  '/red/': typeof RedIndexRoute
   '/bishop/oportunidades/$id': typeof BishopOportunidadesIdRoute
   '/dueno/area/$area': typeof DuenoAreaAreaRoute
+  '/firma/tareas/$id': typeof FirmaTareasIdRoute
+  '/red/tareas/$id': typeof RedTareasIdRoute
   '/bishop/oportunidades/': typeof BishopOportunidadesIndexRoute
 }
 export interface FileRouteTypes {
@@ -243,12 +297,14 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/configuracion'
     | '/perfil'
+    | '/tareas'
     | '/bishop/acuerdos'
     | '/dueno/documentos'
     | '/dueno/franquicias'
     | '/dueno/manual'
     | '/dueno/negocio'
     | '/dueno/numeros'
+    | '/firma/clientes'
     | '/franquicia/manual'
     | '/franquicia/negocio'
     | '/franquicia/pagos'
@@ -256,11 +312,15 @@ export interface FileRouteTypes {
     | '/negocios/$id'
     | '/bishop/'
     | '/dueno/'
+    | '/firma/'
     | '/franquicia/'
     | '/franquicias/'
     | '/negocios/'
+    | '/red/'
     | '/bishop/oportunidades/$id'
     | '/dueno/area/$area'
+    | '/firma/tareas/$id'
+    | '/red/tareas/$id'
     | '/bishop/oportunidades/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -269,12 +329,14 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/configuracion'
     | '/perfil'
+    | '/tareas'
     | '/bishop/acuerdos'
     | '/dueno/documentos'
     | '/dueno/franquicias'
     | '/dueno/manual'
     | '/dueno/negocio'
     | '/dueno/numeros'
+    | '/firma/clientes'
     | '/franquicia/manual'
     | '/franquicia/negocio'
     | '/franquicia/pagos'
@@ -282,11 +344,15 @@ export interface FileRouteTypes {
     | '/negocios/$id'
     | '/bishop'
     | '/dueno'
+    | '/firma'
     | '/franquicia'
     | '/franquicias'
     | '/negocios'
+    | '/red'
     | '/bishop/oportunidades/$id'
     | '/dueno/area/$area'
+    | '/firma/tareas/$id'
+    | '/red/tareas/$id'
     | '/bishop/oportunidades'
   id:
     | '__root__'
@@ -295,12 +361,14 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/configuracion'
     | '/perfil'
+    | '/tareas'
     | '/bishop/acuerdos'
     | '/dueno/documentos'
     | '/dueno/franquicias'
     | '/dueno/manual'
     | '/dueno/negocio'
     | '/dueno/numeros'
+    | '/firma/clientes'
     | '/franquicia/manual'
     | '/franquicia/negocio'
     | '/franquicia/pagos'
@@ -308,11 +376,15 @@ export interface FileRouteTypes {
     | '/negocios/$id'
     | '/bishop/'
     | '/dueno/'
+    | '/firma/'
     | '/franquicia/'
     | '/franquicias/'
     | '/negocios/'
+    | '/red/'
     | '/bishop/oportunidades/$id'
     | '/dueno/area/$area'
+    | '/firma/tareas/$id'
+    | '/red/tareas/$id'
     | '/bishop/oportunidades/'
   fileRoutesById: FileRoutesById
 }
@@ -322,12 +394,14 @@ export interface RootRouteChildren {
   CatalogoRoute: typeof CatalogoRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
   PerfilRoute: typeof PerfilRoute
+  TareasRoute: typeof TareasRoute
   BishopAcuerdosRoute: typeof BishopAcuerdosRoute
   DuenoDocumentosRoute: typeof DuenoDocumentosRoute
   DuenoFranquiciasRoute: typeof DuenoFranquiciasRoute
   DuenoManualRoute: typeof DuenoManualRoute
   DuenoNegocioRoute: typeof DuenoNegocioRoute
   DuenoNumerosRoute: typeof DuenoNumerosRoute
+  FirmaClientesRoute: typeof FirmaClientesRoute
   FranquiciaManualRoute: typeof FranquiciaManualRoute
   FranquiciaNegocioRoute: typeof FranquiciaNegocioRoute
   FranquiciaPagosRoute: typeof FranquiciaPagosRoute
@@ -335,11 +409,15 @@ export interface RootRouteChildren {
   NegociosIdRoute: typeof NegociosIdRoute
   BishopIndexRoute: typeof BishopIndexRoute
   DuenoIndexRoute: typeof DuenoIndexRoute
+  FirmaIndexRoute: typeof FirmaIndexRoute
   FranquiciaIndexRoute: typeof FranquiciaIndexRoute
   FranquiciasIndexRoute: typeof FranquiciasIndexRoute
   NegociosIndexRoute: typeof NegociosIndexRoute
+  RedIndexRoute: typeof RedIndexRoute
   BishopOportunidadesIdRoute: typeof BishopOportunidadesIdRoute
   DuenoAreaAreaRoute: typeof DuenoAreaAreaRoute
+  FirmaTareasIdRoute: typeof FirmaTareasIdRoute
+  RedTareasIdRoute: typeof RedTareasIdRoute
   BishopOportunidadesIndexRoute: typeof BishopOportunidadesIndexRoute
 }
 
@@ -378,6 +456,13 @@ declare module '@tanstack/react-router' {
       path: '/perfil'
       fullPath: '/perfil'
       preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tareas': {
+      id: '/tareas'
+      path: '/tareas'
+      fullPath: '/tareas'
+      preLoaderRoute: typeof TareasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bishop/': {
@@ -436,6 +521,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DuenoNumerosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/firma/': {
+      id: '/firma/'
+      path: '/firma'
+      fullPath: '/firma/'
+      preLoaderRoute: typeof FirmaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/firma/clientes': {
+      id: '/firma/clientes'
+      path: '/firma/clientes'
+      fullPath: '/firma/clientes'
+      preLoaderRoute: typeof FirmaClientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/franquicia/': {
       id: '/franquicia/'
       path: '/franquicia'
@@ -492,6 +591,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NegociosIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/red/': {
+      id: '/red/'
+      path: '/red'
+      fullPath: '/red/'
+      preLoaderRoute: typeof RedIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bishop/oportunidades/': {
       id: '/bishop/oportunidades/'
       path: '/bishop/oportunidades'
@@ -513,6 +619,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DuenoAreaAreaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/firma/tareas/$id': {
+      id: '/firma/tareas/$id'
+      path: '/firma/tareas/$id'
+      fullPath: '/firma/tareas/$id'
+      preLoaderRoute: typeof FirmaTareasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/red/tareas/$id': {
+      id: '/red/tareas/$id'
+      path: '/red/tareas/$id'
+      fullPath: '/red/tareas/$id'
+      preLoaderRoute: typeof RedTareasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -522,12 +642,14 @@ const rootRouteChildren: RootRouteChildren = {
   CatalogoRoute: CatalogoRoute,
   ConfiguracionRoute: ConfiguracionRoute,
   PerfilRoute: PerfilRoute,
+  TareasRoute: TareasRoute,
   BishopAcuerdosRoute: BishopAcuerdosRoute,
   DuenoDocumentosRoute: DuenoDocumentosRoute,
   DuenoFranquiciasRoute: DuenoFranquiciasRoute,
   DuenoManualRoute: DuenoManualRoute,
   DuenoNegocioRoute: DuenoNegocioRoute,
   DuenoNumerosRoute: DuenoNumerosRoute,
+  FirmaClientesRoute: FirmaClientesRoute,
   FranquiciaManualRoute: FranquiciaManualRoute,
   FranquiciaNegocioRoute: FranquiciaNegocioRoute,
   FranquiciaPagosRoute: FranquiciaPagosRoute,
@@ -535,11 +657,15 @@ const rootRouteChildren: RootRouteChildren = {
   NegociosIdRoute: NegociosIdRoute,
   BishopIndexRoute: BishopIndexRoute,
   DuenoIndexRoute: DuenoIndexRoute,
+  FirmaIndexRoute: FirmaIndexRoute,
   FranquiciaIndexRoute: FranquiciaIndexRoute,
   FranquiciasIndexRoute: FranquiciasIndexRoute,
   NegociosIndexRoute: NegociosIndexRoute,
+  RedIndexRoute: RedIndexRoute,
   BishopOportunidadesIdRoute: BishopOportunidadesIdRoute,
   DuenoAreaAreaRoute: DuenoAreaAreaRoute,
+  FirmaTareasIdRoute: FirmaTareasIdRoute,
+  RedTareasIdRoute: RedTareasIdRoute,
   BishopOportunidadesIndexRoute: BishopOportunidadesIndexRoute,
 }
 export const routeTree = rootRouteImport
