@@ -117,7 +117,7 @@ function Program() {
                 );
               })}
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">{t("Casi todos los negocios entran al programa. El puntaje no filtra: define dónde va el trabajo. Un negocio con la marca resuelta no pasa por Marca y marketing.", "Almost every business joins the program. The score does not filter: it decides where the work goes. A business with its brand sorted skips Brand & marketing.")}</p>
+            <p className="mt-3 text-xs text-muted-foreground">{t("Casi todos los negocios entran al programa. El puntaje no filtra: define dónde va el trabajo. Un negocio con la marca resuelta no pasa por Marketing y ventas.", "Almost every business joins the program. The score does not filter: it decides where the work goes. A business with its brand sorted skips Marketing & sales.")}</p>
           </Panel>
           <Panel title={t("Puntaje de franquiciabilidad", "Franchisability score")} className="lg:col-span-1">
             <div className="num font-display text-3xl font-semibold">{b.franchisability ?? 0}%</div>
