@@ -11,7 +11,7 @@ type F = (typeof franchises)[number];
 export function PaymentsTable({ f }: { f: F }) {
   const { t } = useApp();
   return (
-    <Table head={[t("Mes", "Month"), t("Ventas", "Sales"), t("Regalía 5%", "Royalty 5%"), t("Marketing 3%", "Marketing 3%"), t("Participación SM", "SM share"), t("Recibo", "Receipt")]}>
+    <Table head={[t("Mes", "Month"), t("Ventas", "Sales"), t("Regalía 5%", "Royalty 5%"), t("Marketing 3%", "Marketing 3%"), t("Participación SM", "SM share"), t("Recibo", "Receipt")]} right={[1, 2, 3, 4]}>
       {f.sales.map((s) => (
         <tr key={s.m}>
           <td>{s.m} 2026</td><td className="text-right">{usd(s.v)}</td><td className="text-right">{usd(s.v * FEES.royalty)}</td>

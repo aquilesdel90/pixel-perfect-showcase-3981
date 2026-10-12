@@ -43,7 +43,7 @@ function Businesses() {
           {team.map((m) => <option key={m.id}>{m.name}</option>)}
         </select>
       </div>
-      <Table head={[t("Negocio", "Business"), t("Rubro", "Industry"), t("Ciudad", "City"), t("Dueño", "Owner"), t("Facturación anual", "Yearly revenue"), t("Madurez", "Maturity"), t("Etapa", "Stage"), t("Consultor", "Consultant")]}>
+      <Table head={[t("Negocio", "Business"), t("Rubro", "Industry"), t("Ciudad", "City"), t("Dueño", "Owner"), t("Facturación anual", "Yearly revenue"), t("Madurez", "Maturity"), t("Etapa", "Stage"), t("Consultor", "Consultant")]} right={[4]}>
         {rows.map((b) => (
           <tr key={b.id} className="cursor-pointer hover:bg-muted/60" onClick={() => navigate({ to: "/negocios/$id", params: { id: b.id } })}>
             <td className="font-medium">{b.name}</td>

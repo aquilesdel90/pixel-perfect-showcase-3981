@@ -111,7 +111,7 @@ function FirmLoad({ tasks }: { tasks: Task[] }) {
   const { t, lang } = useApp();
   return (
     <Panel title={t("Carga por firma", "Load by firm")}>
-      <Table head={[t("Firma", "Firm"), t("Tipo", "Type"), t("Abiertas", "Open"), t("Vencidas", "Overdue"), t("Atraso prom.", "Avg. late")]}>
+      <Table head={[t("Firma", "Firm"), t("Tipo", "Type"), t("Abiertas", "Open"), t("Vencidas", "Overdue"), t("Atraso prom.", "Avg. late")]} right={[2, 3, 4]}>
         {FIRMS.map((f) => {
           const mine = tasks.filter((x) => x.firm === f.id);
           const late = mine.filter(isOverdue).length;

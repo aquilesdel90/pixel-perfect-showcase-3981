@@ -27,7 +27,7 @@ function Franchises() {
       </div>
       {fr.map((b) => (
         <Panel key={b.id} title={`${b.name} · ${b.city} · Bishop ${b.bishop}`}>
-          <Table head={[t("Franquicia", "Franchise"), t("Comprador", "Buyer"), t("Apertura", "Opening"), t("Estado", "Status"), t("Ventas último mes", "Last month sales"), t("Regalía 5%", "Royalty 5%"), t("Marketing 3%", "Marketing 3%")]}>
+          <Table head={[t("Franquicia", "Franchise"), t("Comprador", "Buyer"), t("Apertura", "Opening"), t("Estado", "Status"), t("Ventas último mes", "Last month sales"), t("Regalía 5%", "Royalty 5%"), t("Marketing 3%", "Marketing 3%")]} right={[4, 5, 6]}>
             {franchises.filter((f) => f.franchisor === b.id).map((f) => {
               const s = f.sales.at(-1)?.v ?? 0;
               return (

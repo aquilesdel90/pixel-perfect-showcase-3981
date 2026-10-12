@@ -60,14 +60,15 @@ export function Stat({ label, value, sub, tone }: { label: string; value: ReactN
   );
 }
 
-export function Table({ head, children }: { head: ReactNode[]; children: ReactNode }) {
+// `right`: indexes of the numeric columns, so their headers line up with the right-aligned cells.
+export function Table({ head, children, right = [] }: { head: ReactNode[]; children: ReactNode; right?: number[] }) {
   return (
     <div className="overflow-x-auto">
       <table className="num w-full text-sm">
         <thead>
           <tr className="border-b-2 border-b-foreground/20 text-left">
             {head.map((h, i) => (
-              <th key={i} className="eyebrow px-3 py-2 whitespace-nowrap">{h}</th>
+              <th key={i} className={`eyebrow px-3 py-2 whitespace-nowrap${right.includes(i) ? " text-right" : ""}`}>{h}</th>
             ))}
           </tr>
         </thead>
