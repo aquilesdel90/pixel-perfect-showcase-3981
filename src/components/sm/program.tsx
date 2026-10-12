@@ -28,7 +28,7 @@ export function ProgramHeader({ b, renderArea = (_a, node) => node }: { b: Busin
       </div>
       <div className="grid gap-2 lg:grid-cols-[150px_1fr_150px]">
         <Gate name={diag[lang]} range={`${t("Días", "Days")} ${diag.start}–${diag.end}`} state={diagDone ? "done" : "active"} />
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
           {(b.areas ?? []).map((a) => <div key={a.area}>{renderArea(a, <AreaColumn a={a} locked={!diagDone} />)}</div>)}
         </div>
         <Gate name={cierre[lang]} range={`${t("Días", "Days")} ${cierre.start}–${cierre.end}`}
