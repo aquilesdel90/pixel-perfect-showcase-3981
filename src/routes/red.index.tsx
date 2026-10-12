@@ -10,7 +10,7 @@ import {
   waitingOwner, type Task, type TaskStatus,
 } from "@/lib/tasks";
 import { cn } from "@/lib/utils";
-import { areaLabel, DueText, FirmPill, StepCell, TaskStatusPill } from "@/components/sm/tasks";
+import { areaLabel, DueText, FirmPill, SmTaskTabs, StepCell, TaskStatusPill } from "@/components/sm/tasks";
 import { Panel, Pill, Stat, Table } from "@/components/sm/ui";
 
 export const Route = createFileRoute("/red/")({
@@ -36,6 +36,7 @@ function NetworkTasks() {
   const deliveredThisWeek = tasks.filter((x) => (lastDelivery(x) ?? "") >= WEEK_START).length;
   return (
     <div className="space-y-4">
+      <SmTaskTabs active="network" />
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
         <Stat label={t("Tareas abiertas", "Open tasks")} value={tasks.filter(isOpen).length} tone="navy" />
         <Stat label={t("Vencidas", "Overdue")} value={overdue} {...(overdue > 0 ? { tone: "red" as const } : {})} />

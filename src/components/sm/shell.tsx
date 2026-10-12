@@ -10,14 +10,14 @@ import { getFirm } from "@/lib/tasks";
 import { areaLabel } from "./tasks";
 import { cn } from "@/lib/utils";
 
-type NavItem = { to: string; es: string; en: string; icon: typeof Home; exact?: boolean };
+// `also`: extra path prefixes that keep this entry highlighted (e.g. the two tabs of "Tareas").
+type NavItem = { to: string; es: string; en: string; icon: typeof Home; exact?: boolean; also?: string[] };
 
 const NAV: Record<Role, NavItem[]> = {
   sm: [
-    { to: "/tareas", es: "Mis tareas", en: "My tasks", icon: ListChecks },
     { to: "/", es: "Embudo", en: "Funnel", icon: Filter, exact: true },
     { to: "/negocios", es: "Negocios", en: "Businesses", icon: Building2 },
-    { to: "/red", es: "Tareas de la red", en: "Network tasks", icon: Network },
+    { to: "/tareas", es: "Tareas", en: "Tasks", icon: ListChecks, also: ["/red"] },
     { to: "/franquicias", es: "Franquicias", en: "Franchises", icon: Store },
     { to: "/calendario", es: "Calendario", en: "Calendar", icon: CalendarDays },
     { to: "/catalogo", es: "Catálogo y equipo", en: "Catalog & team", icon: Layers },
@@ -57,6 +57,7 @@ const EXTRA_TITLES: { prefix: string; es: string; en: string }[] = [
   { prefix: "/franquicias/", es: "Detalle de franquicia", en: "Franchise detail" },
   { prefix: "/bishop/oportunidades/", es: "Ficha de oportunidad", en: "Opportunity sheet" },
   { prefix: "/red/tareas/", es: "Detalle de tarea", en: "Task detail" },
+  { prefix: "/red", es: "Tareas", en: "Tasks" },
   { prefix: "/firma/tareas/", es: "Detalle de tarea", en: "Task detail" },
 ];
 
@@ -92,7 +93,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const items = ownerIsFranchisor ? FRANCHISOR_NAV : NAV[role];
 
   const extra = EXTRA_TITLES.find((e) => path.startsWith(e.prefix));
-  const match = [...items].sort((a, b) => b.to.length - a.to.length).find((i) => (i.exact ? path === i.to : path.startsWith(i.to)));
+  const match = [...items].sort((a, b) => b.to.length - a.to.length).find((i) => (i.exact ? path === i.to : path.startsWith(i.to) || (i.also ?? []).some((p) => path.startsWith(p))));
   const title = extra ? extra[lang] : match ? match[lang] : "SM Platform";
   const currentKey = role === "owner" ? `owner:${ownerBusiness}` : role === "partner" ? `partner:${partnerFirm}` : role;
   const current = ROLES.find((r) => r.key === currentKey) ?? ROLES[0]!;

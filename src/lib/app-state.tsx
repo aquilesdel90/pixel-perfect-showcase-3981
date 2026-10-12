@@ -67,5 +67,4 @@ export function useApp() {
   return c;
 }
 
-// SM lands on "Mis tareas": a consultant has to see what is due before the funnel.
-export const ROLE_HOME: Record<Role, string> = { sm: "/tareas", owner: "/dueno", bishop: "/bishop", franchise: "/franquicia", partner: "/firma" };
+export const ROLE_HOME: Record<Role, string> = { sm: "/", owner: "/dueno", bishop: "/bishop", franchise: "/franquicia", partner: "/firma" };

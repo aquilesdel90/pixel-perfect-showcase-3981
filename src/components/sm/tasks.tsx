@@ -57,6 +57,24 @@ export function StepCell({ task }: { task: Task }) {
   );
 }
 
+// The two views SM has of the tasks live under one menu entry: tabs, same style as the business detail.
+export function SmTaskTabs({ active }: { active: "mine" | "network" }) {
+  const { t } = useApp();
+  const tabs = [
+    { key: "mine" as const, to: "/tareas" as const, es: "Mis tareas", en: "My tasks" },
+    { key: "network" as const, to: "/red" as const, es: "Toda la red", en: "Whole network" },
+  ];
+  return (
+    <div className="flex gap-1 overflow-x-auto border-b">
+      {tabs.map((tab) => (
+        <Link key={tab.key} to={tab.to} className={cn("whitespace-nowrap border-b-2 px-3 py-2 text-sm", active === tab.key ? "border-gold font-semibold text-foreground" : "border-transparent text-muted-foreground hover:text-foreground")}>
+          {t(tab.es, tab.en)}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 // The four numbers a firm (or an SM consultant) checks first.
 export function TaskCounters({ tasks }: { tasks: Task[] }) {
   const { t } = useApp();
