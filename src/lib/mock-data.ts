@@ -51,6 +51,7 @@ export const businesses: Business[] = [
     revenue: 1850000, maturity: 59, level: "M3", stage: "program", stageSince: "2026-07-27", consultant: "Nicolás García", day: 74,
     franchisability: 58, assessmentVersion: "v3",
     areas: [
+      a("estr", 2, 60, "Marylin Boraei", "Validar supuestos del plan de negocio"),
       a("fin", 2, 55, "Marylin Boraei", "Subir estados de cuenta de agosto"),
       a("proc", 2, 48, "Nicolás García", "Revisar mapa de procesos de obra"),
       a("marca", 1, 32, "Marylin Boraei", "Aprobar propuesta de logo"),
@@ -63,6 +64,7 @@ export const businesses: Business[] = [
     revenue: 920000, maturity: 51, level: "M3", stage: "program", stageSince: "2026-09-09", consultant: "Nicolás García", day: 31,
     franchisability: 34, assessmentVersion: "v3",
     areas: [
+      a("estr", 1, 30, "Marylin Boraei", "Revisar borrador del blueprint"),
       a("fin", 1, 22, "Marylin Boraei", "Enviar acceso a QuickBooks"),
       a("proc", 0, 15, "Nicolás García", "Agendar entrevista con jefe de cuadrilla"),
       { ...a("marca", 0, 0, "—", "—"), skipped: true, skipReason: "Marca registrada y consistente: Ventas y marca dio 84% en el assessment" },
@@ -75,6 +77,7 @@ export const businesses: Business[] = [
     revenue: 410000, maturity: 44, level: "M2", stage: "program", stageSince: "2026-10-04", consultant: "Marylin Boraei", day: 6,
     franchisability: 18, assessmentVersion: "v3",
     areas: [
+      a("estr", 0, 5, "Marylin Boraei", "—"),
       a("fin", 0, 0, "Marylin Boraei", "—"),
       a("proc", 0, 0, "Nicolás García", "—"),
       a("marca", 0, 0, "Marylin Boraei", "—"),
@@ -87,6 +90,7 @@ export const businesses: Business[] = [
     revenue: 1240000, maturity: 78, level: "M4", stage: "franchisor", stageSince: "2025-11-14", consultant: "Nicolás García", day: 180,
     franchisability: 91, bishop: "Jefferson Paula", assessmentVersion: "v2",
     areas: [
+      a("estr", 5, 100, "Marylin Boraei", "—"),
       a("fin", 5, 100, "Marylin Boraei", "—"),
       a("proc", 5, 100, "Nicolás García", "—"),
       a("marca", 5, 100, "Marylin Boraei", "—"),
@@ -99,6 +103,7 @@ export const businesses: Business[] = [
     revenue: 1480000, maturity: 81, level: "M4", stage: "program", stageSince: "2026-04-28", consultant: "Marylin Boraei", day: 165,
     franchisability: 87, assessmentVersion: "v2",
     areas: [
+      a("estr", 4, 100, "Marylin Boraei", "—"),
       a("fin", 4, 100, "Marylin Boraei", "—"),
       a("proc", 4, 95, "Nicolás García", "Aprobar sección Personas del manual"),
       a("marca", 4, 100, "Marylin Boraei", "—"),
