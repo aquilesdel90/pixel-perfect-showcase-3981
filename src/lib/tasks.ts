@@ -129,7 +129,7 @@ function generate(): Task[] {
   for (const bid of PROGRAM_BIZ) {
     const b = getBusiness(bid)!;
     const sel = SELECTION[bid]!;
-    const start = addDays(TODAY, -(b.day - 1));
+    const start = addDays(TODAY, -((b.day ?? 1) - 1));
     const franchisor = b.stage === "franchisor";
     for (const area of b.areas ?? []) {
       if (area.skipped) continue;
