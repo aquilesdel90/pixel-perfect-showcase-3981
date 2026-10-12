@@ -33,7 +33,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     deliver: (id, note) => up(id, (t) => {
       const re = t.status === "changes";
       const file = `${t.code}_v${t.attachments.length + 1}.pdf`;
-      return { ...t, status: re ? "redelivered" : "delivered", step: 3, deliveryNote: note || t.deliveryNote, attachments: [...t.attachments, file],
+      return { ...t, status: re ? "redelivered" : "delivered", step: 3, ...(note || t.deliveryNote ? { deliveryNote: note || t.deliveryNote || "" } : {}), attachments: [...t.attachments, file],
         history: [...t.history, re ? hist("Reentregada", "Redelivered", note) : hist("Entregada", "Delivered", note)],
         thread: note ? [...t.thread, msg(t.responsible, "firm", note)] : t.thread };
     }),
