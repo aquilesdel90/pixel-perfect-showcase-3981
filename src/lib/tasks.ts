@@ -10,12 +10,12 @@ export const CATALOG = catalogJson as unknown as CatalogItem[];
 
 export interface Firm { id: string; name: string; area: AreaId; internal: boolean; contact: string; email: string }
 export const FIRMS: Firm[] = [
-  { id: "sm-estr", name: "SM Estrategia (Miami)", area: "estr", internal: true, contact: "Marylin Boraei", email: "marylin@strategicmates.com" },
-  { id: "opslab", name: "OpsLab Consulting", area: "proc", internal: false, contact: "Andrea Ruiz", email: "andrea@opslab.co" },
-  { id: "delta", name: "Delta Contadores", area: "fin", internal: false, contact: "Marcos Lin", email: "marcos@deltacpa.com" },
-  { id: "tecnopyme", name: "TecnoPyme", area: "tec", internal: false, contact: "Sofía Castro", email: "sofia@tecnopyme.io" },
-  { id: "xyz", name: "Agencia XYZ", area: "marca", internal: false, contact: "Valeria Soto", email: "valeria@agenciaxyz.com" },
-  { id: "perez", name: "Estudio Pérez Legal", area: "legal", internal: false, contact: "Julián Pérez", email: "julian@perezlegal.com" },
+  { id: "sm-estr", name: "SM Miami (estrategia, equipo propio)", area: "estr", internal: true, contact: "Marylin Boraei", email: "marylin@strategicmates.com" },
+  { id: "opslab", name: "OpsLab Consulting (operaciones y procesos)", area: "proc", internal: false, contact: "Andrea Ruiz", email: "andrea@opslab.co" },
+  { id: "delta", name: "Delta Contadores (finanzas y fiscal)", area: "fin", internal: false, contact: "Marcos Lin", email: "marcos@deltacpa.com" },
+  { id: "tecnopyme", name: "TecnoPyme (tecnología)", area: "tec", internal: false, contact: "Sofía Castro", email: "sofia@tecnopyme.io" },
+  { id: "xyz", name: "Agencia XYZ (marketing)", area: "marca", internal: false, contact: "Valeria Soto", email: "valeria@agenciaxyz.com" },
+  { id: "perez", name: "Estudio Pérez (abogados)", area: "legal", internal: false, contact: "Julián Pérez", email: "julian@perezlegal.com" },
 ];
 export const getFirm = (id: string | null | undefined) => FIRMS.find((f) => f.id === id);
 export const firmForArea = (area: AreaId) => FIRMS.find((f) => f.area === area)!;
@@ -242,7 +242,7 @@ export const nextAction = (t: Task): TaskAction | undefined =>
 export const firmShortName = (firmId: string | null) => {
   const f = getFirm(firmId);
   if (!f) return undefined;
-  return f.internal ? "SM" : f.name;
+  return f.internal ? "SM (estrategia)" : f.name;
 };
 
 // The SM person logged in as the "Equipo SM" role. "Mis tareas" for SM lists the tasks where they are responsible.

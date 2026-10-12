@@ -68,8 +68,8 @@ const ROLES: { key: string; id: Role; biz?: string; firm?: string; es: string; e
   { key: "owner:bimbo", id: "owner", biz: "bimbo", es: "Small Business · Bimbo Tacos (franquiciadora)", en: "Small Business · Bimbo Tacos (franchisor)", who: "Rodrigo Bimbo · Bimbo Tacos" },
   { key: "bishop", id: "bishop", es: "Business Bishop", en: "Business Bishop", who: "Jefferson Paula" },
   { key: "franchise", id: "franchise", es: "Franquiciado", en: "Franchise owner", who: "Luisa Paredes · Bimbo Orlando Sur" },
-  { key: "partner:xyz", id: "partner", firm: "xyz", es: "Firma aliada · Agencia XYZ (Marketing)", en: "Partner firm · Agencia XYZ (Marketing)", who: "Valeria Soto · Agencia XYZ" },
-  { key: "partner:perez", id: "partner", firm: "perez", es: "Firma aliada · Estudio Pérez Legal (Legal)", en: "Partner firm · Estudio Pérez Legal (Legal)", who: "Julián Pérez · Estudio Pérez Legal" },
+  { key: "partner:xyz", id: "partner", firm: "xyz", es: "Firma aliada · Agencia XYZ (marketing)", en: "Partner firm · Agencia XYZ (marketing)", who: "Valeria Soto · Agencia XYZ" },
+  { key: "partner:perez", id: "partner", firm: "perez", es: "Firma aliada · Estudio Pérez (abogados)", en: "Partner firm · Estudio Pérez (lawyers)", who: "Julián Pérez · Estudio Pérez" },
 ];
 
 // A franchisor's menu replaces "Mi programa" with the franchisor home and adds its franchises.
