@@ -61,10 +61,44 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return <Ctx.Provider value={{ role, setRole, lang, setLang, dark, setDark, t, ownerBusiness, setOwnerBusiness, partnerFirm, setPartnerFirm, manualVersions, publishManual }}>{children}</Ctx.Provider>;
 }
 
+// Reads a saved choice straight from the browser. Used when the provider is missing so the screen
+// still shows the language and role the person last picked instead of going blank.
+function stored<T extends string>(key: string, fallback: T): T {
+  try {
+    const v = localStorage.getItem(key);
+    return (v === null ? fallback : (v as T)) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+let warned = false;
+// A screen that renders without AppProvider (a stale hot-reloaded module, a route outside the shell)
+// must degrade to saved defaults, never blank the whole page.
 export function useApp() {
   const c = useContext(Ctx);
-  if (!c) throw new Error("useApp outside provider");
-  return c;
+  if (c) return c;
+  if (!warned) {
+    warned = true;
+    console.warn("useApp sin proveedor: usando los valores guardados. Recargá la página para normalizarlo.");
+  }
+  const lang = stored<Lang>("sm-lang", "es");
+  const noop = () => {};
+  return {
+    role: stored<Role>("sm-role", "sm"),
+    setRole: noop,
+    lang,
+    setLang: noop,
+    dark: stored("sm-dark", "0") === "1",
+    setDark: noop,
+    t: (es: string, en: string) => (lang === "es" ? es : en),
+    ownerBusiness: stored("sm-owner", CURRENT.ownerBusiness),
+    setOwnerBusiness: noop,
+    partnerFirm: stored("sm-firm", CURRENT.partnerFirm),
+    setPartnerFirm: noop,
+    manualVersions: {},
+    publishManual: noop,
+  };
 }
 
 export const ROLE_HOME: Record<Role, string> = { sm: "/", owner: "/dueno", bishop: "/bishop", franchise: "/franquicia", partner: "/firma" };
