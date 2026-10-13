@@ -89,7 +89,7 @@ export function useApp() {
     setRole: noop,
     lang,
     setLang: noop,
-    dark: stored("sm-dark", "0") === "1",
+    dark: stored<string>("sm-dark", "0") === "1",
     setDark: noop,
     t: (es: string, en: string) => (lang === "es" ? es : en),
     ownerBusiness: stored("sm-owner", CURRENT.ownerBusiness),
